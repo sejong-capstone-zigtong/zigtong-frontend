@@ -24,5 +24,5 @@ const TotalBrowserComponent = styled.div`
 const PhoneBrowserComponent = styled.div`
   width: 390px;
   min-height: 100%;
-  background-color: #f1f1f1;
+  border: 1px solid gray;
 `;
