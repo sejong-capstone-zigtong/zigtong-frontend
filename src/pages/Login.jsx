@@ -15,7 +15,7 @@ const Login = () => {
   };
 
   const onClickSignUp = () => {
-    navigate("/phoneCertify");
+    navigate("/signup/phoneCertify");
   };
 
   return (
