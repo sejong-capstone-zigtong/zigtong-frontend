@@ -1,15 +1,60 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import icon from "../assets/sign/Icon.svg";
-import checkCircle from "../assets/sign/CheckCircle.svg";
+import checkCircle from "../assets/sign/CheckCircleGreen.svg";
 
 const PhoneCertify = () => {
   const navigate = useNavigate();
 
+  // 초기 시간을 초단위로 설정합니다. 3분은 180초입니다.
+  const [seconds, setSeconds] = useState(null);
+  const [isActiveTimer, setIsActiveTimer] = useState(false);
+  const [isVisibleModal, setIsVisibleModal] = useState(false);
+
+  // 시간을 MM:SS 형태로 변환하는 함수
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+  }
+
+  // 타이머 시작, 일시 정지 및 리셋을 관리하는 함수
+  function toggleTimer() {
+    setSeconds(18); // 180초로 초기화
+    setIsActiveTimer(true);
+    setIsVisibleModal(true);
+    setTimeout(() => {
+      setIsVisibleModal(false);
+    }, 3000); // 3초 후 모달 숨기기
+  }
+
   const onClickIcon = () => {
     navigate("/");
   };
+
+  // 흔들림 애니메이션 정의
+  const shakeAnimation = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      x: [0, -10, 10, -10, 10, 0],
+      transition: { type: "spring", stiffness: 100, duration: 0.5 },
+    },
+  };
+
+  // 타이머가 활성화되었을 때 매초마다 시간을 감소시키는 효과
+  useEffect(() => {
+    let interval = null;
+    if (isActiveTimer && seconds > 0) {
+      interval = setInterval(() => {
+        setSeconds((seconds) => seconds - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isActiveTimer, seconds]);
 
   return (
     <PhoneCertifyTotalComponent>
@@ -18,18 +63,25 @@ const PhoneCertify = () => {
       <PhoneInputComponent>
         <BasicPhoneInput>010</BasicPhoneInput>
         <PhoneInput type="text" placeholder="- 없이 입력해주세요" />
-        <PhoneCertifyBtn>인증 요청</PhoneCertifyBtn>
+        <PhoneCertifyBtn onClick={toggleTimer}>인증 요청</PhoneCertifyBtn>
       </PhoneInputComponent>
       <AnswerCertifyLabel>인증번호</AnswerCertifyLabel>
       <AnswerCertifyInputComponent>
         <AnswerCertifyInput type="text" placeholder="인증번호 6자리를 입력해주세요" />
-        <AnswerCertifyTime>03:00</AnswerCertifyTime>
+        {isActiveTimer && <AnswerCertifyTime>{formatTime(seconds)}</AnswerCertifyTime>}
       </AnswerCertifyInputComponent>
-      <SendCertifyNumberModal>
-        <SendCertifyNumberCheckImg src={checkCircle} alt="v" />
-        <SendCertifyNumberText>인증번호를 발송했습니다.</SendCertifyNumberText>
-      </SendCertifyNumberModal>
-      <CompleteCertifyBtn>인증완료</CompleteCertifyBtn>
+      <AnimatePresence>
+        {isVisibleModal && (
+          <motion.div initial="hidden" animate="visible" exit="hidden" variants={shakeAnimation}>
+            <SendCertifyNumberModal>
+              <SendCertifyNumberCheckImg src={checkCircle} alt="v" />
+              <SendCertifyNumberText>인증번호를 발송했습니다.</SendCertifyNumberText>
+            </SendCertifyNumberModal>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <CompleteCertifyBtn>인증하기</CompleteCertifyBtn>
     </PhoneCertifyTotalComponent>
   );
 };
@@ -122,7 +174,10 @@ const AnswerCertifyTime = styled.div`
 `;
 
 const SendCertifyNumberModal = styled.div`
-  margin: 228px 0px 0px 0px;
+  position: absolute;
+  top: 685px;
+  left: 43px;
+  align-self: center;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -154,6 +209,6 @@ const CompleteCertifyBtn = styled.button`
   color: #fff;
   font-size: 20px;
   font-weight: 600;
-  margin: 14px 0px 0px 0px;
+  margin: 297px 0px 0px 0px;
   cursor: pointer;
 `;
