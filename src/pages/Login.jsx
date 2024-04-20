@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import icon from "../assets/sign/Icon.svg";
-import eyeOff from "../assets/sign/EyeImg.svg";
+import eyeOff from "../assets/sign/EyeOff.svg";
+import eyeOpen from "../assets/sign/EyeOpen.svg";
 import naver from "../assets/sign/Naver.svg";
 import kakao from "../assets/sign/Kakao.svg";
 import bar from "../assets/sign/BarImg.svg";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  const [isOpenPassword, setIsOpenPassword] = useState(false);
 
   const onClickIcon = () => {
     navigate("/");
@@ -24,8 +27,29 @@ const Login = () => {
       <LoginText>로그인</LoginText>
       <LoginId type="text" placeholder="아이디" />
       <LoginPasswordTotalComponent>
-        <LoginPassword type="password" placeholder="비밀번호" />
-        <LoginPasswordEyeImg src={eyeOff} alt="eye" />
+        {isOpenPassword ? (
+          <>
+            <LoginPassword type="text" placeholder="비밀번호" />
+            <LoginPasswordEyeImg
+              onClick={() => {
+                setIsOpenPassword(false);
+              }}
+              src={eyeOff}
+              alt="eye"
+            />
+          </>
+        ) : (
+          <>
+            <LoginPassword type="password" placeholder="비밀번호" />
+            <LoginPasswordEyeImg
+              onClick={() => {
+                setIsOpenPassword(true);
+              }}
+              src={eyeOpen}
+              alt="eye"
+            />
+          </>
+        )}
       </LoginPasswordTotalComponent>
       <UnderSelfLoginComponent>
         <UnderSelfLoginLine />
