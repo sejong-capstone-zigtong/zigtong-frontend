@@ -9,6 +9,7 @@ import Terms from "./pages/Terms";
 import OtherInfo from "./pages/OtherInfo";
 import SearchWork from "./pages/SearchWork";
 import WorkDetail from "./pages/WorkDetail";
+import Assignment from "./pages/Assignment";
 
 const Router = () => {
   return (
@@ -23,6 +24,7 @@ const Router = () => {
           <Route path="/signup/otherInfo" element={<OtherInfo />} />
           <Route path="/works" element={<SearchWork />} />
           <Route path="/works/detail" element={<WorkDetail />} />
+          <Route path="/assignment" element={<Assignment />} />
         </Route>
       </Routes>
     </BrowserRouter>
