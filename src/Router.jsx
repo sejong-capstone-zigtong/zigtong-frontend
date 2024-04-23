@@ -10,6 +10,7 @@ import OtherInfo from "./pages/OtherInfo";
 import SearchWork from "./pages/SearchWork";
 import WorkDetail from "./pages/WorkDetail";
 import Assignment from "./pages/Assignment";
+import SavedWorks from "./pages/SavedWork";
 
 const Router = () => {
   return (
@@ -25,6 +26,7 @@ const Router = () => {
           <Route path="/works" element={<SearchWork />} />
           <Route path="/works/detail" element={<WorkDetail />} />
           <Route path="/assignment" element={<Assignment />} />
+          <Route path="/works/saved" element={<SavedWorks />} />
         </Route>
       </Routes>
     </BrowserRouter>
