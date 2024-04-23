@@ -8,6 +8,7 @@ import PhoneCertifyConfirm from "./pages/PhoneCertifyConfirm";
 import Terms from "./pages/Terms";
 import OtherInfo from "./pages/OtherInfo";
 import SearchWork from "./pages/SearchWork";
+import WorkDetail from "./pages/WorkDetail";
 
 const Router = () => {
   return (
@@ -20,7 +21,8 @@ const Router = () => {
           <Route path="/signup/phoneCertifyConfirm" element={<PhoneCertifyConfirm />} />
           <Route path="/signup/terms" element={<Terms />} />
           <Route path="/signup/otherInfo" element={<OtherInfo />} />
-          <Route path="/searchWork" element={<SearchWork />} />
+          <Route path="/works" element={<SearchWork />} />
+          <Route path="/works/detail" element={<WorkDetail />} />
         </Route>
       </Routes>
     </BrowserRouter>
