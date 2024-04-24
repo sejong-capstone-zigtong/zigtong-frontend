@@ -12,6 +12,7 @@ import WorkDetail from "./pages/WorkDetail";
 import Assignment from "./pages/Assignment";
 import SavedWorks from "./pages/SavedWork";
 import Profile from "./pages/Profile";
+import MyPage from "./pages/MyPage";
 
 const Router = () => {
   return (
@@ -29,6 +30,7 @@ const Router = () => {
           <Route path="/assignment" element={<Assignment />} />
           <Route path="/works/saved" element={<SavedWorks />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/mypage" element={<MyPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
