@@ -135,9 +135,10 @@ const ProfileOtherInfoContainer = styled.div`
   display: flex;
   align-items: center;
   color: #1e1e1e;
+  width: 208px;
   font-size: 16px;
   font-weight: 800;
-  margin: 0px 0px 0px 22px;
+  margin: 0px 0px 0px 17px;
 `;
 
 const ProfileCompletePercentComponent = styled.div`
