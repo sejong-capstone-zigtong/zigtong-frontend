@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -7,29 +8,80 @@ import eyeOpen from "../assets/sign/EyeOpen.svg";
 import naver from "../assets/sign/Naver.svg";
 import kakao from "../assets/sign/Kakao.svg";
 import bar from "../assets/sign/BarImg.svg";
+import { LoginApi } from "../apis/LoginApis";
 
 const Login = () => {
   const navigate = useNavigate();
 
+  // 패스워드 보일지 안보일지
   const [isOpenPassword, setIsOpenPassword] = useState(false);
+  //로그인 시 유저정보 저장
+  const [userInfo, setUserInfo] = useState({
+    account: "",
+    password: "",
+  });
+  const { account, password } = userInfo;
 
-  const onClickIcon = () => {
-    navigate("/");
+  //아이디, 비밀번호 바뀔때 실행 함수
+  const onChangeAccount = (e) => {
+    const value = e.target.value;
+    setUserInfo({
+      ...userInfo,
+      account: value,
+    });
+  };
+  const onChangePassword = (e) => {
+    const value = e.target.value;
+    setUserInfo({
+      ...userInfo,
+      password: value,
+    });
   };
 
-  const onClickSignUp = () => {
-    navigate("/signup/phoneCertify");
+  const onPasswordKeyDown = (event) => {
+    if (event.key === "Enter") {
+      if (userInfo.account == "") {
+        alert("아이디를 입력해주세요");
+      } else if (userInfo.password == "") {
+        alert("비밀번호를 입력해주세요");
+      } else {
+        onLogin();
+      }
+    }
+  };
+
+  const onLogin = async () => {
+    try {
+      await LoginApi(userInfo).then((res) => {
+        console.log(res);
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
     <LoginTotalComponent>
-      <IconComponent onClick={onClickIcon} src={icon} alt="icon" />
+      <IconComponent
+        onClick={() => {
+          navigate("/");
+        }}
+        src={icon}
+        alt="icon"
+      />
       <LoginText>로그인</LoginText>
-      <LoginId type="text" placeholder="아이디" />
+      <LoginId onChange={onChangeAccount} type="text" value={account} placeholder="아이디" />
       <LoginPasswordTotalComponent>
+        {/* 비밀번호 보일 때, 안보일 때 */}
         {isOpenPassword ? (
           <>
-            <LoginPassword type="text" placeholder="비밀번호" />
+            <LoginPassword
+              onChange={onChangePassword}
+              onKeyDown={onPasswordKeyDown}
+              type="text"
+              value={password}
+              placeholder="비밀번호"
+            />
             <LoginPasswordEyeImg
               onClick={() => {
                 setIsOpenPassword(false);
@@ -40,7 +92,13 @@ const Login = () => {
           </>
         ) : (
           <>
-            <LoginPassword type="password" placeholder="비밀번호" />
+            <LoginPassword
+              onChange={onChangePassword}
+              onKeyDown={onPasswordKeyDown}
+              type="password"
+              value={password}
+              placeholder="비밀번호"
+            />
             <LoginPasswordEyeImg
               onClick={() => {
                 setIsOpenPassword(true);
@@ -70,7 +128,13 @@ const Login = () => {
         <SearchInfoText>아이디 찾기</SearchInfoText>
       </SearchInfoComponent>
       <NotUserText>아직 직통의 회원이 아니라면?</NotUserText>
-      <SignUpText onClick={onClickSignUp}>회원가입</SignUpText>
+      <SignUpText
+        onClick={() => {
+          navigate("/signup/phoneCertify");
+        }}
+      >
+        회원가입
+      </SignUpText>
       <ManagerLoginText>관리자 로그인</ManagerLoginText>
     </LoginTotalComponent>
   );
