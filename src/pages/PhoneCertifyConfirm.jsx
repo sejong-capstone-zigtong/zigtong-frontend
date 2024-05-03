@@ -1,29 +1,46 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import icon from "../assets/sign/Icon.svg";
 import check from "../assets/sign/Check.svg";
 
 const PhoneCertifyConfirm = () => {
   const navigate = useNavigate();
 
-  const onClickIcon = () => {
-    navigate("/");
-  };
+  // const { state } = useLocation();
+  // const [userInfo, setUserInfo] = useState(state.userInfo);
 
+  const [userInfo, setUserInfo] = useState({
+    phoneNumber: "01054851325",
+  });
   return (
     <PhoneCertifyConfirmTotalComponent>
-      <IconComponent onClick={onClickIcon} src={icon} alt="icon" />
+      <IconComponent
+        onClick={() => {
+          navigate("/");
+        }}
+        src={icon}
+        alt="icon"
+      />
       <PhoneLabel>휴대폰 번호</PhoneLabel>
       <PhoneTotalComponent>
         <PhoneComponent>
-          <PhoneTextFirst>010</PhoneTextFirst>
-          <PhoneTextOther>2970</PhoneTextOther>
-          <PhoneTextOther>4417</PhoneTextOther>
+          <PhoneTextFirst>{userInfo.phoneNumber.substring(0, 3)}</PhoneTextFirst>
+          <PhoneTextOther>{userInfo.phoneNumber.substring(3, 7)}</PhoneTextOther>
+          <PhoneTextOther>{userInfo.phoneNumber.substring(7)}</PhoneTextOther>
           <PhoneCheckImg src={check} alt="V" />
         </PhoneComponent>
       </PhoneTotalComponent>
-      <SignUpBtn>회원가입</SignUpBtn>
+      <SignUpBtn
+        onClick={() => {
+          navigate("/signup/terms", {
+            state: { userInfo: userInfo },
+          });
+        }}
+      >
+        회원가입
+      </SignUpBtn>
     </PhoneCertifyConfirmTotalComponent>
   );
 };

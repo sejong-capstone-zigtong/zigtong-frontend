@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const url = "http://localhost:8080";
+const url = "http://3.36.50.107:8080";
 
-export const LoginApi = (payload) => {
-  return axios.post(`${url}/auth/sign-in`, {
-    account: payload.account,
-    password: payload.password,
+export const loginApi = (userInfo) => {
+  return axios.post(`${url}/api/client/v1/auth/sign-in`, {
+    memberAccount: userInfo.memberAccount,
+    password: userInfo.password,
   });
 };
