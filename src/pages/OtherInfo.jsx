@@ -1,50 +1,275 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import icon from "../assets/sign/Icon.svg";
+import KakaoMap from "./KakaoMap.jsx";
+import { motion, AnimatePresence } from "framer-motion";
+import { signUpApi } from "../apis/SignUpApis.jsx";
 
 const OtherInfo = () => {
   const navigate = useNavigate();
 
-  const onClickIcon = () => {
-    navigate("/");
+  const { state } = useLocation();
+
+  // userInfo 전달받아 저장(아이디, 비밀번호 추가)
+  const [userInfo, setUserInfo] = useState({
+    ...state.userInfo,
+    name: "",
+    address: "",
+    gender: "",
+    birthdate: "",
+    nickname: "",
+    // certificates: "",
+  });
+  const [isOpenDropdown, setIsOpenDropdown] = useState(false);
+  const [selectedDropdown, setSelectedDropdown] = useState(null);
+  const dropdownOptions = ["옵션 1", "옵션 2", "옵션 3"]; // 드롭다운에 표시할 옵션들
+  const toggleDropdown = () => {
+    setIsOpenDropdown(!isOpenDropdown);
+  };
+  const handleOptionClick = (option) => {
+    setSelectedDropdown(option);
+    setIsOpenDropdown(false);
+  };
+
+  const [mapToggle, setMapToggle] = useState(false);
+
+  const handleMapToggle = () => {
+    setMapToggle(!mapToggle);
+  };
+
+  // 이름 입력 함수
+  const onChangeName = (e) => {
+    const value = e.target.value;
+    setUserInfo({
+      ...userInfo,
+      name: value,
+    });
+  };
+
+  const onClickGender = (e) => {
+    const value = e.target.value;
+    setUserInfo({
+      ...userInfo,
+      gender: e.target.value,
+    });
+  };
+
+  const onChangeBirthDate = (e) => {
+    const value = e.target.value;
+    setUserInfo({
+      ...userInfo,
+      birthdate: value,
+    });
+  };
+
+  const isValidDate = (dateString) => {
+    // 정규 표현식을 이용하여 YYYY-MM-DD 형식인지 확인
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    return regex.test(dateString);
+  };
+
+  // 이름 입력 함수
+  const onChangeNickname = (e) => {
+    const value = e.target.value;
+    setUserInfo({
+      ...userInfo,
+      nickname: value,
+    });
+  };
+
+  const signup = async () => {
+    try {
+      await signUpApi(userInfo).then((res) => {
+        console.log(res);
+        alert("회원가입 성공");
+        navigate("/login");
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onClickSignUp = () => {
+    if (!isValidDate(userInfo.birthdate)) {
+      alert("올바른 생년월일 형식으로 작성해주세요");
+    } else if (
+      userInfo.name !== "" &&
+      userInfo.gender !== "" &&
+      userInfo.address !== "" &&
+      userInfo.nickname !== ""
+    ) {
+      signup();
+    } else {
+      alert("모든 정보를 입력해주세요");
+    }
   };
 
   return (
     <PhoneCertifyConfirmTotalComponent>
-      <IconComponent onClick={onClickIcon} src={icon} alt="icon" />
-      <Header>
-        반갑습니다!
-        <br />
-        회원님의 정보를 알려주세요.
-      </Header>
-      <ContentComponent margin="38px 0px 0px 0px">
-        <ContentLabel>이름</ContentLabel>
-        <ContentInput type="text" />
-      </ContentComponent>
-      <ContentComponent>
-        <ContentLabel>성별(필수)</ContentLabel>
-        <UnSelectedGender>남성</UnSelectedGender>
-        <UnSelectedGender margin="0px 0px 0px 8px">여성</UnSelectedGender>
-      </ContentComponent>
-      <ContentComponent>
-        <ContentLabel>생년월일(필수)</ContentLabel>
-        <ContentInput type="text" placeholder="주민번호 앞자리 입력" />
-      </ContentComponent>
-      <ContentComponent>
-        <ContentLabel>거주지(필수)</ContentLabel>
-        <ContentInput type="text" />
-      </ContentComponent>
-      <ContentComponent>
-        <ContentLabel>활동명(필수)</ContentLabel>
-        <ContentInput type="text" />
-      </ContentComponent>
-      <ContentComponent>
-        <ContentLabel>주요 직무</ContentLabel>
-        <ContentInput type="text" />
-      </ContentComponent>
-      <LastSignUpPage>`거의 다 왔어요! 마지막이에요:)`</LastSignUpPage>
-      <SignUpCompleteBtn>가입완료</SignUpCompleteBtn>
+      {mapToggle ? (
+        <KakaoMap handleMapToggle={handleMapToggle} userInfo={userInfo} setUserInfo={setUserInfo} />
+      ) : (
+        <>
+          <IconComponent
+            onClick={() => {
+              navigate("/");
+            }}
+            src={icon}
+            alt="icon"
+          />
+          <Header>
+            반갑습니다!
+            <br />
+            회원님의 정보를 알려주세요.
+          </Header>
+          <div>{userInfo.birthday}</div>
+          <ContentComponent margin="38px 0px 0px 0px">
+            <ContentLabel>이름</ContentLabel>
+            <ContentInput
+              type="text"
+              value={userInfo.name}
+              onChange={onChangeName}
+              placeholder="이름을 입력하세요"
+            />
+          </ContentComponent>
+          <ContentComponent>
+            <ContentLabel>성별</ContentLabel>
+            {userInfo.gender === "MALE" ? (
+              <SelectedGender value="MALE" onClick={onClickGender}>
+                남성
+              </SelectedGender>
+            ) : (
+              <UnSelectedGender value="MALE" onClick={onClickGender}>
+                남성
+              </UnSelectedGender>
+            )}
+            {userInfo.gender === "FEMALE" ? (
+              <SelectedGender value="FEMALE" onClick={onClickGender} margin="0px 0px 0px 8px">
+                여성
+              </SelectedGender>
+            ) : (
+              <UnSelectedGender value="FEMALE" onClick={onClickGender} margin="0px 0px 0px 8px">
+                여성
+              </UnSelectedGender>
+            )}
+          </ContentComponent>
+          <ContentComponent>
+            <ContentLabel>생년월일</ContentLabel>
+            <ContentInput
+              value={userInfo.birthdate}
+              onChange={onChangeBirthDate}
+              type="text"
+              placeholder="YYYY-MM-DD"
+            />
+          </ContentComponent>
+          <ContentComponent>
+            <ContentLabel>거주지</ContentLabel>
+            <ContentInput
+              type="text"
+              placeholder="거주지 선택 (클릭) "
+              name="address"
+              value={userInfo.address}
+              onClick={handleMapToggle}
+            />
+          </ContentComponent>
+          <ContentComponent>
+            <ContentLabel>활동명</ContentLabel>
+            <ContentInput
+              placeholder="활동명을 입력하세요"
+              type="text"
+              onChange={onChangeNickname}
+              value={userInfo.nickname}
+            />
+          </ContentComponent>
+          {/* <ContentComponent
+            style={{
+              position: "relative",
+              margin: "34px 0px 0px 0px",
+              height: "auto",
+              alignItems: "flex-start",
+            }}
+          >
+            <ContentLabel
+              style={{
+                margin: "8px 0px 0px 0px",
+              }}
+            >
+              주요 직무
+            </ContentLabel>
+            <div
+              style={{
+                position: "relative",
+              }}
+            >
+              <DropdownInput onClick={toggleDropdown}>
+                {selectedDropdown || "선택해주세요"}
+              </DropdownInput>
+              <div style={{ backgroundColor: "#f1f1f1" }}>
+                <AnimatePresence>
+                  {isOpenDropdown && (
+                    <motion.div
+                      className="dropdown-options"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      style={{
+                        zIndex: 2,
+                        position: "absolute",
+                        width: "100%",
+                        top: "100%",
+                        left: "0",
+                        transition: "opacity 0.2s ease, transform 0.2s ease",
+                        backgroundColor: "#fff",
+                        border: "1px solid #ccc",
+                        display: "flex",
+                        flexDirection: "column",
+                        borderTop: "none",
+                        alignItems: "center",
+                        borderBottomLeftRadius: "4px",
+                        borderBottomRightRadius: "4px",
+                        padding: "3px 0px",
+                      }}
+                    >
+                      {dropdownOptions.map((option, index) => (
+                        <motion.div
+                          key={index}
+                          onClick={() => handleOptionClick(option)}
+                          whileHover={{ backgroundColor: "#ccc" }}
+                          style={{
+                            borderTop: "1px solid #f1f1f1",
+                            width: "100%",
+                            height: "30px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "14px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          {option}
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </ContentComponent> */}
+          <ContentComponent
+            style={{
+              position: "relative",
+              margin: "34px 0px 0px 0px",
+              // height: "auto",
+              alignItems: "flex-start",
+            }}
+          ></ContentComponent>
+          <LastSignUpPage>`거의 다 왔어요! 마지막이에요:)`</LastSignUpPage>
+          <SignUpCompleteBtn onClick={onClickSignUp}>가입완료</SignUpCompleteBtn>
+        </>
+      )}
     </PhoneCertifyConfirmTotalComponent>
   );
 };
@@ -102,7 +327,21 @@ const ContentInput = styled.input`
   outline: none;
 `;
 
-const UnSelectedGender = styled.div`
+const DropdownInput = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 178px;
+  height: 32px;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.4);
+  border: none;
+  cursor: pointer;
+`;
+
+const UnSelectedGender = styled.button`
   font-family: "Pretendard Variable";
   display: flex;
   align-items: center;
@@ -114,20 +353,21 @@ const UnSelectedGender = styled.div`
   box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.4);
   color: #1e1e1e;
   font-size: 18px;
+  border: none;
   margin: ${(props) => props.margin || "0px"};
 `;
 
-// const SelectedGender = styled(UnSelectedGender)`
-//   background-color: #3461fd;
-//   color: #fff;
-// `;
+const SelectedGender = styled(UnSelectedGender)`
+  background-color: #3461fd;
+  color: #fff;
+`;
 
 const LastSignUpPage = styled.div`
   font-family: "Pretendard Variable";
   color: #2623d3;
   font-size: 14px;
   font-weight: 600;
-  margin: 100px 0px 0px 0px;
+  margin: 80px 0px 0px 0px;
 `;
 
 const SignUpCompleteBtn = styled.button`

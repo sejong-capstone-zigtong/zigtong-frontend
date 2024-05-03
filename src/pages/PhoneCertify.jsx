@@ -5,34 +5,77 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import icon from "../assets/sign/Icon.svg";
 import checkCircle from "../assets/sign/CheckCircleGreen.svg";
+import { phoneCertifyApi, confirmPhoneCertifyApi } from "../apis/SignUpApis";
 
 const PhoneCertify = () => {
   const navigate = useNavigate();
 
   // 초기 시간을 초단위로 설정합니다. 3분은 180초입니다.
   const [seconds, setSeconds] = useState(null);
+  // 타이머 실행시킬지 말지
   const [isActiveTimer, setIsActiveTimer] = useState(false);
+  // 인증 요청 보낼 시 뜨는 모달창 보이는지 여부
   const [isVisibleModal, setIsVisibleModal] = useState(false);
+  // 핸드폰 번호 뒷자리 저장
+  const [receiver, setReceiver] = useState("");
+  //인증번호 저장
+  const [verificationCode, setVerificationCode] = useState("");
+
+  // 핸드폰 번호 입력 함수
+  const onChangePhoneNumber = (e) => {
+    const value = e.target.value.replace(/[^0-9]/g, ""); // 숫자가 아닌 것은 제거
+    if (value.length <= 8) {
+      // 8자리까지만 입력 허용
+      setReceiver(value);
+    }
+  };
+  // 인증 번호 입력 함수
+  const onChangeVerificationCode = (e) => {
+    const value = e.target.value;
+    setVerificationCode(value);
+  };
 
   // 시간을 MM:SS 형태로 변환하는 함수
-  function formatTime(seconds) {
+  const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
-  }
+  };
 
-  // 타이머 시작, 일시 정지 및 리셋을 관리하는 함수
-  function toggleTimer() {
-    setSeconds(18); // 180초로 초기화
+  const sendPhoneCertifyCode = async () => {
+    try {
+      if (receiver.length === 8) {
+        await phoneCertifyApi(receiver).then((res) => {
+          console.log(res);
+          toggleTimer();
+        });
+      } else {
+        alert("정확한 전화번호를 입력하세요");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // 인증번호가 맞는지 확인하는 함수
+  const confirmPhoneCertify = async () => {
+    try {
+      await confirmPhoneCertifyApi(receiver, verificationCode).then((res) => {
+        console.log(res);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // 타이머 시작 및 리셋을 관리하는 함수
+  const toggleTimer = () => {
+    setSeconds(180); // 180초로 초기화
     setIsActiveTimer(true);
     setIsVisibleModal(true);
     setTimeout(() => {
       setIsVisibleModal(false);
     }, 3000); // 3초 후 모달 숨기기
-  }
-
-  const onClickIcon = () => {
-    navigate("/");
   };
 
   // 흔들림 애니메이션 정의
@@ -58,16 +101,32 @@ const PhoneCertify = () => {
 
   return (
     <PhoneCertifyTotalComponent>
-      <IconComponent onClick={onClickIcon} src={icon} alt="icon" />
+      <IconComponent
+        onClick={() => {
+          navigate("/");
+        }}
+        src={icon}
+        alt="icon"
+      />
       <PhoneLabel>휴대폰 번호</PhoneLabel>
       <PhoneInputComponent>
         <BasicPhoneInput>010</BasicPhoneInput>
-        <PhoneInput type="text" placeholder="- 없이 입력해주세요" />
-        <PhoneCertifyBtn onClick={toggleTimer}>인증 요청</PhoneCertifyBtn>
+        <PhoneInput
+          onChange={onChangePhoneNumber}
+          type="text"
+          value={receiver}
+          placeholder="- 없이 입력해주세요"
+        />
+        <PhoneCertifyBtn onClick={sendPhoneCertifyCode}>인증 요청</PhoneCertifyBtn>
       </PhoneInputComponent>
       <AnswerCertifyLabel>인증번호</AnswerCertifyLabel>
       <AnswerCertifyInputComponent>
-        <AnswerCertifyInput type="text" placeholder="인증번호 6자리를 입력해주세요" />
+        <AnswerCertifyInput
+          onChange={onChangeVerificationCode}
+          type="text"
+          value={verificationCode}
+          placeholder="인증번호를 입력해주세요"
+        />
         {isActiveTimer && <AnswerCertifyTime>{formatTime(seconds)}</AnswerCertifyTime>}
       </AnswerCertifyInputComponent>
       <AnimatePresence>
@@ -80,8 +139,20 @@ const PhoneCertify = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <CompleteCertifyBtn>인증하기</CompleteCertifyBtn>
+      {isActiveTimer && verificationCode.length > 0 ? (
+        <CompleteCertifyBtn
+          // onClick={() => {
+          //   navigate("/signup/phoneCertifyConfirm", {
+          //     state: { userInfo: { phoneNumber: `010${receiver}` } },
+          //   });
+          // }}
+          onClick={confirmPhoneCertify}
+        >
+          인증하기
+        </CompleteCertifyBtn>
+      ) : (
+        <UnCompleteCertifyBtn>인증하기</UnCompleteCertifyBtn>
+      )}
     </PhoneCertifyTotalComponent>
   );
 };
@@ -199,7 +270,7 @@ const SendCertifyNumberText = styled.div`
   margin: 0px 0px 0px 8px;
 `;
 
-const CompleteCertifyBtn = styled.button`
+const UnCompleteCertifyBtn = styled.button`
   font-family: "Pretendard Variable";
   width: 345px;
   height: 53px;
@@ -211,4 +282,8 @@ const CompleteCertifyBtn = styled.button`
   font-weight: 600;
   margin: 297px 0px 0px 0px;
   cursor: pointer;
+`;
+
+const CompleteCertifyBtn = styled(UnCompleteCertifyBtn)`
+  background-color: #3461fd;
 `;

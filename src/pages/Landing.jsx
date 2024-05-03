@@ -7,10 +7,6 @@ import { useNavigate } from "react-router-dom";
 const Landing = () => {
   const navigate = useNavigate();
 
-  const onClickArrow = () => {
-    navigate("/login");
-  };
-
   return (
     <>
       <LandingTotalComponent>
@@ -27,7 +23,13 @@ const Landing = () => {
         </Content>
         <Footer>
           <FooterText>시작하기</FooterText>
-          <FooterArrow onClick={onClickArrow} src={rigthArrow} alt=">" />
+          <FooterArrow
+            onClick={() => {
+              navigate("/login");
+            }}
+            src={rigthArrow}
+            alt=">"
+          />
         </Footer>
       </LandingTotalComponent>
     </>

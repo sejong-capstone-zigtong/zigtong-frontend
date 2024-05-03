@@ -8,7 +8,7 @@ import eyeOpen from "../assets/sign/EyeOpen.svg";
 import naver from "../assets/sign/Naver.svg";
 import kakao from "../assets/sign/Kakao.svg";
 import bar from "../assets/sign/BarImg.svg";
-import { LoginApi } from "../apis/LoginApis";
+import { loginApi } from "../apis/LoginApis";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,17 +17,17 @@ const Login = () => {
   const [isOpenPassword, setIsOpenPassword] = useState(false);
   //로그인 시 유저정보 저장
   const [userInfo, setUserInfo] = useState({
-    account: "",
+    memberAccount: "",
     password: "",
   });
-  const { account, password } = userInfo;
+  const { memberAccount, password } = userInfo;
 
   //아이디, 비밀번호 바뀔때 실행 함수
   const onChangeAccount = (e) => {
     const value = e.target.value;
     setUserInfo({
       ...userInfo,
-      account: value,
+      memberAccount: value,
     });
   };
   const onChangePassword = (e) => {
@@ -38,9 +38,10 @@ const Login = () => {
     });
   };
 
+  // 패스워드에서 엔터키 누르면 아래 함수 실행
   const onPasswordKeyDown = (event) => {
     if (event.key === "Enter") {
-      if (userInfo.account == "") {
+      if (userInfo.memberAccount == "") {
         alert("아이디를 입력해주세요");
       } else if (userInfo.password == "") {
         alert("비밀번호를 입력해주세요");
@@ -50,13 +51,17 @@ const Login = () => {
     }
   };
 
+  // 로그인 api
   const onLogin = async () => {
     try {
-      await LoginApi(userInfo).then((res) => {
-        console.log(res);
+      await loginApi(userInfo).then((res) => {
+        localStorage.setItem("accessToken", res.data.data.accessToken);
+        navigate("/works");
       });
     } catch (err) {
-      console.log(err);
+      if (err.response.data.data.message === "존재하지 않는 회원입니다.") {
+        alert("존재하지 않는 회원입니다.");
+      }
     }
   };
 
@@ -70,7 +75,7 @@ const Login = () => {
         alt="icon"
       />
       <LoginText>로그인</LoginText>
-      <LoginId onChange={onChangeAccount} type="text" value={account} placeholder="아이디" />
+      <LoginId onChange={onChangeAccount} type="text" value={memberAccount} placeholder="아이디" />
       <LoginPasswordTotalComponent>
         {/* 비밀번호 보일 때, 안보일 때 */}
         {isOpenPassword ? (
@@ -130,7 +135,7 @@ const Login = () => {
       <NotUserText>아직 직통의 회원이 아니라면?</NotUserText>
       <SignUpText
         onClick={() => {
-          navigate("/signup/phoneCertify");
+          navigate("/signup/phoneCertifyConfirm");
         }}
       >
         회원가입

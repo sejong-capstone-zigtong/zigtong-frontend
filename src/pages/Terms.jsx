@@ -1,14 +1,48 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import icon from "../assets/sign/Icon.svg";
 import checkCircleGray from "../assets/sign/CheckCircleGray.svg";
 import checkCircleBlack from "../assets/sign/CheckCircleBlack.svg";
+import { accountDuplicationApi } from "../apis/SignUpApis";
 
 const Terms = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
 
+  // userInfo 전달받아 저장(아이디, 비밀번호 추가)
+  const [userInfo, setUserInfo] = useState({
+    ...state.userInfo,
+    memberAccount: "",
+    password: "",
+    passwordCheck: "",
+  });
+
+  // 아이디,비밀번호,비밀번호확인 입력 함수
+  const onChangeAccount = (e) => {
+    const value = e.target.value;
+    setUserInfo({
+      ...userInfo,
+      memberAccount: value,
+    });
+  };
+  const onChangePassword = (e) => {
+    const value = e.target.value;
+    setUserInfo({
+      ...userInfo,
+      password: value,
+    });
+  };
+  const onChangePasswordCheck = (e) => {
+    const value = e.target.value;
+    setUserInfo({
+      ...userInfo,
+      passwordCheck: value,
+    });
+  };
+
+  // 약관 체크 상태관리
   const [checkedState, setCheckedState] = useState({
     isCheckedTotal: false,
     isCheckedOne: false,
@@ -21,20 +55,55 @@ const Terms = () => {
     isCheckedSix: false,
   });
 
-  const onClickIcon = () => {
-    navigate("/");
+  const onClickNextBtn = () => {
+    if (
+      checkedState.isCheckedOne &&
+      checkedState.isCheckedTwo &&
+      checkedState.isCheckedThree &&
+      userInfo.memberAccount !== "" &&
+      userInfo.password !== "" &&
+      userInfo.passwordCheck !== "" &&
+      userInfo.password === userInfo.passwordCheck
+    ) {
+      navigate("/signup/otherInfo", {
+        state: { userInfo: userInfo },
+      });
+    } else {
+      alert("제대로 입력해주세요");
+    }
   };
 
   return (
     <SignUpTotalComponent>
-      <IconComponent onClick={onClickIcon} src={icon} alt="icon" />
+      <IconComponent
+        onClick={() => {
+          navigate("/");
+        }}
+        src={icon}
+        alt="icon"
+      />
       <SignUpHeader>회원가입</SignUpHeader>
       <SignUpLabel margin="14px 0px 0px 19px">아이디</SignUpLabel>
-      <SignUpInput type="text" placeholder="아이디를 입력해주세요" />
+      <SignUpInput
+        onChange={onChangeAccount}
+        type="text"
+        value={userInfo.account}
+        placeholder="아이디를 입력해주세요"
+      />
       <SignUpLabel margin="12px 0px 0px 19px">비밀번호</SignUpLabel>
-      <SignUpInput type="text" placeholder="비밀번호를 입력해주세요" />
+      <SignUpInput
+        onChange={onChangePassword}
+        type="text"
+        value={userInfo.password}
+        placeholder="비밀번호를 입력해주세요"
+      />
       <SignUpLabel margin="18px 0px 0px 19px">비밀번호 확인</SignUpLabel>
-      <SignUpInput type="text" placeholder="비밀번호를 재입력해주세요" />
+      <SignUpInput
+        onChange={onChangePasswordCheck}
+        type="text"
+        value={userInfo.passwordCheck}
+        placeholder="비밀번호를 재입력해주세요"
+      />
       <TotalCheckTermsComponent>
         {checkedState.isCheckedTotal ? (
           <CheckImg
@@ -81,6 +150,7 @@ const Terms = () => {
             onClick={() => {
               setCheckedState({
                 ...checkedState,
+                isCheckedTotal: false,
                 isCheckedOne: false,
               });
             }}
@@ -107,6 +177,7 @@ const Terms = () => {
             onClick={() => {
               setCheckedState({
                 ...checkedState,
+                isCheckedTotal: false,
                 isCheckedTwo: false,
               });
             }}
@@ -133,6 +204,7 @@ const Terms = () => {
             onClick={() => {
               setCheckedState({
                 ...checkedState,
+                isCheckedTotal: false,
                 isCheckedThree: false,
               });
             }}
@@ -159,6 +231,7 @@ const Terms = () => {
             onClick={() => {
               setCheckedState({
                 ...checkedState,
+                isCheckedTotal: false,
                 isCheckedFour: false,
               });
             }}
@@ -185,6 +258,7 @@ const Terms = () => {
             onClick={() => {
               setCheckedState({
                 ...checkedState,
+                isCheckedTotal: false,
                 isCheckedFive: false,
                 isCheckedFiveOne: false,
                 isCheckedFiveTwo: false,
@@ -216,6 +290,8 @@ const Terms = () => {
             onClick={() => {
               setCheckedState({
                 ...checkedState,
+                isCheckedTotal: false,
+                isCheckedFive: false,
                 isCheckedFiveOne: false,
               });
             }}
@@ -243,6 +319,8 @@ const Terms = () => {
             onClick={() => {
               setCheckedState({
                 ...checkedState,
+                isCheckedTotal: false,
+                isCheckedFive: false,
                 isCheckedFiveTwo: false,
               });
             }}
@@ -270,6 +348,7 @@ const Terms = () => {
             onClick={() => {
               setCheckedState({
                 ...checkedState,
+                isCheckedTotal: false,
                 isCheckedSix: false,
               });
             }}
@@ -290,7 +369,7 @@ const Terms = () => {
         )}
         <OtherCheckTermsText>[선택] 장기 미접속 시에도 계정 활성 상태 유지</OtherCheckTermsText>
       </OtherCheckTermsComponent>
-      <NextButton>다음</NextButton>
+      <NextButton onClick={onClickNextBtn}>다음</NextButton>
     </SignUpTotalComponent>
   );
 };
