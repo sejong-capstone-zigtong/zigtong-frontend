@@ -9,9 +9,14 @@ import naver from "../assets/sign/Naver.svg";
 import kakao from "../assets/sign/Kakao.svg";
 import bar from "../assets/sign/BarImg.svg";
 import { loginApi } from "../apis/LoginApis";
+import { useRecoilState } from "recoil";
+import { userAccessToken } from "../recoil/atoms.tsx";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  // 리코일 어세스토큰 저장
+  const [accessToken, setAccessToken] = useRecoilState(userAccessToken);
 
   // 패스워드 보일지 안보일지
   const [isOpenPassword, setIsOpenPassword] = useState(false);
@@ -55,7 +60,8 @@ const Login = () => {
   const onLogin = async () => {
     try {
       await loginApi(userInfo).then((res) => {
-        localStorage.setItem("accessToken", res.data.data.accessToken);
+        console.log(res.data.data.accessToken);
+        setAccessToken(res.data.data.accessToken);
         navigate("/works");
       });
     } catch (err) {

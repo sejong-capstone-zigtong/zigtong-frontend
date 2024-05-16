@@ -1,21 +1,108 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Footer from "../components/common/Footer";
 import user from "../assets/profile/User.svg";
 import pencil from "../assets/profile/Pencil.svg";
+import editProfile from "../assets/profile/EditProfile.svg";
+import oneOfFour from "../assets/profile/OneOfFour.svg";
+import twoOfFour from "../assets/profile/TwoOfFour.svg";
+import threeOfFour from "../assets/profile/ThreeOfFour.svg";
+import fourOfFour from "../assets/profile/FourOfFour.svg";
+import checkBlue from "../assets/profile/CheckBlue.svg";
+import plus from "../assets/profile/Plus.svg";
 
 const Profile = () => {
+  const [isIdVerification, setIsIdVerification] = useState(true);
+  const [isProfileImg, setIsProfileImg] = useState(false);
+  const [isSelfIntroduce, setIsSelfIntroduce] = useState(false);
+  const [isHasSkill, setIsHasSkill] = useState(false);
+
   return (
     <ProfileTotalComponent>
       <ProfileHeader>프로필</ProfileHeader>
       <ProfileInfo>
         <ProfileInfoImgContainer>
           <ProfileInfoImg src={user} alt="user" />
+          <EditProfileInfoWrapper>
+            <EditProfileInfoImg src={editProfile} alt="plus" />
+          </EditProfileInfoWrapper>
         </ProfileInfoImgContainer>
-        <ProfileOtherInfoContainer>01012345678</ProfileOtherInfoContainer>
+        <ProfileOtherInfoContainer>
+          <ProfileOtherInfoContainerText>박태건</ProfileOtherInfoContainerText>
+          <ProfileOtherInfoContainerText fontSize="14px" fontWeight="600">
+            만 23세 | 남
+          </ProfileOtherInfoContainerText>
+        </ProfileOtherInfoContainer>
       </ProfileInfo>
-      <ProfileCompletePercentComponent>완성도 부분</ProfileCompletePercentComponent>
+      <ProfileCompletePercentComponent>
+        <ProfileCompletePercentText>프로필 완성도</ProfileCompletePercentText>
+        {[isIdVerification, isProfileImg, isSelfIntroduce, isHasSkill].filter(Boolean).length ===
+        4 ? (
+          <ProfileCompleteGraph src={fourOfFour} alt="g" />
+        ) : [isIdVerification, isProfileImg, isSelfIntroduce, isHasSkill].filter(Boolean).length ===
+          3 ? (
+          <ProfileCompleteGraph src={threeOfFour} alt="g" />
+        ) : [isIdVerification, isProfileImg, isSelfIntroduce, isHasSkill].filter(Boolean).length ===
+          2 ? (
+          <ProfileCompleteGraph src={twoOfFour} alt="g" />
+        ) : (
+          <ProfileCompleteGraph src={oneOfFour} alt="g" />
+        )}
+        <ProfileUnderGraphText>
+          아래 4가지 항목이 모두 채워져야 일자리에 지원이 가능합니다
+        </ProfileUnderGraphText>
+        <ProfileGraphItemsWrapper>
+          <ProfileGraphItemWrapper>
+            {isIdVerification ? (
+              <ProfileGraphItemCheckIcon src={checkBlue} />
+            ) : (
+              <ProfileGraphItemIcon src={plus} />
+            )}
+            {isIdVerification ? (
+              <ProfileGraphItemText color="#006FFD">본인 인증</ProfileGraphItemText>
+            ) : (
+              <ProfileGraphItemText color="#A6A6A6">본인 인증</ProfileGraphItemText>
+            )}
+          </ProfileGraphItemWrapper>
+          <ProfileGraphItemWrapper>
+            {isProfileImg ? (
+              <ProfileGraphItemCheckIcon src={checkBlue} />
+            ) : (
+              <ProfileGraphItemIcon src={plus} />
+            )}
+            {isProfileImg ? (
+              <ProfileGraphItemText color="#006FFD">프로필 사진 등록</ProfileGraphItemText>
+            ) : (
+              <ProfileGraphItemText color="#A6A6A6">프로필 사진 등록</ProfileGraphItemText>
+            )}
+          </ProfileGraphItemWrapper>
+          <ProfileGraphItemWrapper>
+            {isSelfIntroduce ? (
+              <ProfileGraphItemCheckIcon src={checkBlue} />
+            ) : (
+              <ProfileGraphItemIcon src={plus} />
+            )}
+            {isSelfIntroduce ? (
+              <ProfileGraphItemText color="#006FFD">한줄 자기소개 등록</ProfileGraphItemText>
+            ) : (
+              <ProfileGraphItemText color="#A6A6A6">한줄 자기소개 등록</ProfileGraphItemText>
+            )}
+          </ProfileGraphItemWrapper>
+          <ProfileGraphItemWrapper>
+            {isHasSkill ? (
+              <ProfileGraphItemCheckIcon src={checkBlue} />
+            ) : (
+              <ProfileGraphItemIcon src={plus} />
+            )}
+            {isHasSkill ? (
+              <ProfileGraphItemText color="#006FFD">업무스킬 등록</ProfileGraphItemText>
+            ) : (
+              <ProfileGraphItemText color="#A6A6A6">업무스킬 등록</ProfileGraphItemText>
+            )}
+          </ProfileGraphItemWrapper>
+        </ProfileGraphItemsWrapper>
+      </ProfileCompletePercentComponent>
       <ProfileEachContainer>
         <ProfileEachHeaderContainer>
           <ProfileEachHeaderTopic>한줄 자기소개</ProfileEachHeaderTopic>
@@ -55,13 +142,7 @@ const Profile = () => {
         </ProfileEachContentPlaceholder>
       </ProfileEachContainer>
       <TenPixelBar />
-      <ProfileEachContainer>
-        <ProfileEachHeaderContainer>
-          <ProfileEachHeaderTopic>본인인증</ProfileEachHeaderTopic>
-        </ProfileEachHeaderContainer>
-        <SelfCertification>본인인증하기</SelfCertification>
-      </ProfileEachContainer>
-      <TenPixelBar />
+
       <ProfileEachContainer>
         <ProfileEachHeaderContainer>
           <ProfileEachHeaderTopic>리뷰</ProfileEachHeaderTopic>
@@ -114,6 +195,7 @@ const ProfileInfo = styled.div`
 `;
 
 const ProfileInfoImgContainer = styled.div`
+  position: relative;
   display: flex;
   width: 65px;
   height: 65px;
@@ -130,21 +212,116 @@ const ProfileInfoImg = styled.img`
   height: 39px;
 `;
 
-const ProfileOtherInfoContainer = styled.div`
-  font-family: "Pretendard Variable";
+const EditProfileInfoWrapper = styled.div`
+  position: absolute;
   display: flex;
   align-items: center;
-  color: #1e1e1e;
-  width: 208px;
-  font-size: 16px;
-  font-weight: 800;
+  justify-content: center;
+  right: -4px;
+  bottom: -4px;
+  width: 23px;
+  height: 23px;
+  flex-shrink: 0;
+  background-color: #eceff1;
+  stroke-width: 0.287px;
+  border: 1px solid #000;
+  border-radius: 50%;
+  cursor: pointer;
+`;
+
+const EditProfileInfoImg = styled.img`
+  display: flex;
+  width: 13.8px;
+  height: 13.8px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+`;
+
+const ProfileOtherInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
   margin: 0px 0px 0px 17px;
+`;
+
+const ProfileOtherInfoContainerText = styled.div`
+  color: #1e1e1e;
+  font-family: "Pretendard Variable";
+  font-size: ${(props) => props.fontSize || "16px"};
+  font-style: normal;
+  font-weight: ${(props) => props.fontWeight || "800"};
+  line-height: 18px;
 `;
 
 const ProfileCompletePercentComponent = styled.div`
   width: 359px;
   height: 307px;
   margin: 32px 0px 0px 0px;
+`;
+
+const ProfileCompletePercentText = styled.div`
+  color: #1e1e1e;
+  font-family: "Pretendard Variable";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
+`;
+
+const ProfileCompleteGraph = styled.img`
+  width: 355px;
+  height: 10px;
+  margin: 32px 0px 0px 0px;
+`;
+
+const ProfileUnderGraphText = styled.div`
+  color: var(--Grey-text, #a6a6a6);
+  font-family: "Pretendard Variable";
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px;
+  margin: 20px 0px 0px 0px;
+`;
+
+const ProfileGraphItemsWrapper = styled.div`
+  display: flex;
+  width: 355px;
+  padding: 10px 30px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  border-radius: 12px;
+  border: 1px solid #000;
+  margin: 20px 0px 0px 0px;
+`;
+
+const ProfileGraphItemWrapper = styled.div`
+  display: flex;
+  padding: 3px 0px;
+  height: 38px;
+  align-items: center;
+  gap: 9px;
+`;
+const ProfileGraphItemCheckIcon = styled.img`
+  width: 24px;
+  height: 20px;
+`;
+
+const ProfileGraphItemIcon = styled.img`
+  width: 24px;
+  height: 24px;
+`;
+
+const ProfileGraphItemText = styled.div`
+  color: ${(props) => props.color};
+  font-family: "Pretendard Variable";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
 `;
 
 const ProfileEachContainer = styled.div`
