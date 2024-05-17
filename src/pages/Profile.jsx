@@ -1,16 +1,10 @@
 /* eslint-disable no-unused-vars */
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import Footer from "../components/common/Footer";
-import user from "../assets/profile/User.svg";
-import pencil from "../assets/profile/Pencil.svg";
-import editProfile from "../assets/profile/EditProfile.svg";
-import oneOfFour from "../assets/profile/OneOfFour.svg";
-import twoOfFour from "../assets/profile/TwoOfFour.svg";
-import threeOfFour from "../assets/profile/ThreeOfFour.svg";
-import fourOfFour from "../assets/profile/FourOfFour.svg";
-import checkBlue from "../assets/profile/CheckBlue.svg";
-import plus from "../assets/profile/Plus.svg";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRecoilValue } from "recoil";
+import { userAccessTokenState } from "recoil/atoms";
+import Footer from "components/common/Footer";
 import {
   getCertificateCategoryApi,
   getCertificateInfoApi,
@@ -18,18 +12,27 @@ import {
   putCertificateApi,
   putUserCareersApi,
   putUserIntroduceApi,
-} from "../apis/ProfileApis";
-import { useRecoilValue } from "recoil";
-import { userAccessTokenState } from "../recoil/atoms";
-import experienceIcon from "../assets/profile/ExperienceIcon.svg";
-import { motion, AnimatePresence } from "framer-motion";
+} from "apis/ProfileApis";
+import experienceIcon from "assets/profile/ExperienceIcon.svg";
+import user from "assets/profile/User.svg";
+import pencil from "assets/profile/Pencil.svg";
+import editProfile from "assets/profile/EditProfile.svg";
+import oneOfFour from "assets/profile/OneOfFour.svg";
+import twoOfFour from "assets/profile/TwoOfFour.svg";
+import threeOfFour from "assets/profile/ThreeOfFour.svg";
+import fourOfFour from "assets/profile/FourOfFour.svg";
+import checkBlue from "assets/profile/CheckBlue.svg";
+import plus from "assets/profile/Plus.svg";
 
+// 유저 프로필 페이지
 const Profile = () => {
+  // 4단계 충족 여부 확인
   const [isIdVerification, setIsIdVerification] = useState(true);
   const [isProfileImg, setIsProfileImg] = useState(false);
   const [isSelfIntroduce, setIsSelfIntroduce] = useState(false);
   const [isHasSkill, setIsHasSkill] = useState(false);
 
+  // 유저정보 저장
   const [userInfo, setUserInfo] = useState({
     birthdate: "",
     careers: [],
@@ -52,8 +55,10 @@ const Profile = () => {
   const [certificates, setCertificates] = useState(userInfo.certificates);
   const [skills, setSkills] = useState(userInfo.skills);
 
+  // 리코일 받은 어세스토큰
   const accessToken = useRecoilValue(userAccessTokenState);
 
+  // 유저 이력서 정보 받기
   const getUserInfo = useCallback(async () => {
     try {
       getUserInfoApi(accessToken).then((res) => {
@@ -102,8 +107,8 @@ const Profile = () => {
     getUserInfo();
   }, [getUserInfo]);
 
+  // YYYY-MM-DD형식의 생년월일을 만 나이로 변환
   const [age, setAge] = useState(null);
-
   const calculateAge = (birthDateString) => {
     if (!birthDateString) {
       console.error("No birth date provided or birth date is undefined");
@@ -126,16 +131,15 @@ const Profile = () => {
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
-
     return age;
   };
 
+  // 한줄 자기소개
   const [isOpenIntroduceModal, setIsOpenIntroduceModal] = useState(false);
-
   const onChangeIntroduce = (e) => {
     setContent(e.target.value);
   };
-
+  // 한줄 자기소개 수정
   const putUserIntroduce = async () => {
     try {
       await putUserIntroduceApi(accessToken, content).then((res) => {
@@ -152,6 +156,7 @@ const Profile = () => {
     }
   };
 
+  // 경력 및 경험
   const [isOpenCareersModal, setIsOpenCareersModal] = useState(false);
   const onChangeCareer = (e) => {
     const { value, name } = e.target;
@@ -160,13 +165,13 @@ const Profile = () => {
       [name]: value,
     });
   };
-
+  // 생년월일 형식 맞는지 확인
   const isValidDate = (dateString) => {
     // 정규 표현식을 이용하여 YYYY-MM-DD 형식인지 확인
     const regex = /^\d{4}-\d{2}-\d{2}$/;
     return regex.test(dateString);
   };
-
+  // 경력 수정
   const putCareer = async () => {
     try {
       if (!isValidDate(career.startDate || !isValidDate(career.endDate))) {
@@ -195,6 +200,7 @@ const Profile = () => {
     }
   };
 
+  // 선택한 자격증 정보 저장
   const [isOpenCertificatesModal, setIsOpenCertificatesModal] = useState(false);
   const [certificateNameList, setCertificateNameList] = useState({});
   const [certificateIds, setCertificateIds] = useState([]);
@@ -233,6 +239,7 @@ const Profile = () => {
     }
   };
 
+  // 자격증 선택 시
   const onClickCertificateItem = (item) => {
     getCertificateInfoApi(accessToken, item).then((res) => {
       console.log(res.data);
@@ -241,6 +248,7 @@ const Profile = () => {
     });
   };
 
+  // 자격증 수정하기 버튼 누를시
   const certificateModify = async () => {
     try {
       await putCertificateApi(accessToken, certificateIds).then((res) => {
@@ -281,6 +289,7 @@ const Profile = () => {
         </ProfileOtherInfoContainer>
       </ProfileInfo>
       <ProfileCompletePercentComponent>
+        {/* 완성도 그래프 */}
         <ProfileCompletePercentText>프로필 완성도</ProfileCompletePercentText>
         {[isIdVerification, isProfileImg, isSelfIntroduce, isHasSkill].filter(Boolean).length ===
         4 ? (
@@ -348,6 +357,8 @@ const Profile = () => {
           </ProfileGraphItemWrapper>
         </ProfileGraphItemsWrapper>
       </ProfileCompletePercentComponent>
+
+      {/* 자기소개 */}
       <ProfileEachContainer>
         <ProfileEachHeaderContainer>
           <ProfileEachHeaderTopic>한줄 자기소개</ProfileEachHeaderTopic>
@@ -368,6 +379,8 @@ const Profile = () => {
         )}
       </ProfileEachContainer>
       <TenPixelBar />
+
+      {/* 보유 스킬 */}
       <ProfileEachContainer>
         <ProfileEachHeaderContainer>
           <ProfileEachHeaderTopic>스킬</ProfileEachHeaderTopic>
@@ -386,6 +399,8 @@ const Profile = () => {
         )}
       </ProfileEachContainer>
       <TenPixelBar />
+
+      {/* 경력 및 경험 */}
       <ProfileEachContainer>
         <ProfileEachHeaderContainer>
           <ProfileEachHeaderTopic>경력 및 경험</ProfileEachHeaderTopic>
@@ -447,6 +462,8 @@ const Profile = () => {
         )}
       </ProfileEachContainer>
       <TenPixelBar />
+
+      {/* 자격증 정보 */}
       <ProfileEachContainer>
         <ProfileEachHeaderContainer>
           <ProfileEachHeaderTopic>자격증</ProfileEachHeaderTopic>
@@ -474,6 +491,7 @@ const Profile = () => {
       </ProfileEachContainer>
       <TenPixelBar />
 
+      {/* 리뷰 */}
       <ProfileEachContainer>
         <ProfileEachHeaderContainer>
           <ProfileEachHeaderTopic>리뷰</ProfileEachHeaderTopic>
@@ -483,6 +501,8 @@ const Profile = () => {
         </ProfileEachContentPlaceholder>
       </ProfileEachContainer>
       <TenPixelBar />
+
+      {/* 계좌번호 */}
       <ProfileEachContainer>
         <ProfileEachHeaderContainer>
           <ProfileEachHeaderTopic>임금 계좌</ProfileEachHeaderTopic>
@@ -493,6 +513,7 @@ const Profile = () => {
         </ProfileEachContentPlaceholder>
       </ProfileEachContainer>
       <Footer />
+      {/* 자기소개 수정 모달창 */}
       {isOpenIntroduceModal && (
         <AnimatePresence>
           {/* 뒷배경을 클릭하면 모달을 나갈 수 있게 해야하므로 뒷 배경 onClick에 state함수를 넣는다. */}
@@ -523,6 +544,7 @@ const Profile = () => {
           </SearchModalBox>
         </AnimatePresence>
       )}
+      {/* 경력 및 경험 추가 모달창 */}
       {isOpenCareersModal && (
         <AnimatePresence>
           {/* 뒷배경을 클릭하면 모달을 나갈 수 있게 해야하므로 뒷 배경 onClick에 state함수를 넣는다. */}
@@ -591,6 +613,7 @@ const Profile = () => {
           </SearchModalBox>
         </AnimatePresence>
       )}
+      {/* 자격증 선택 모달창 */}
       {isOpenCertificatesModal && (
         <AnimatePresence>
           {/* 뒷배경을 클릭하면 모달을 나갈 수 있게 해야하므로 뒷 배경 onClick에 state함수를 넣는다. */}

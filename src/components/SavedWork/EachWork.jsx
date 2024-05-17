@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import testImg from "../../assets/test/TestImg.png";
-import calendar from "../../assets/searchWork/Calendar.svg";
-import clock from "../../assets/searchWork/Clock.svg";
-import region from "../../assets/searchWork/Region.svg";
-import heartFill from "../../assets/saved/HeartFill.svg";
+import testImg from "assets/test/TestImg.png";
+import calendar from "assets/searchWork/Calendar.svg";
+import clock from "assets/searchWork/Clock.svg";
+import region from "assets/searchWork/Region.svg";
+import heartFill from "assets/saved/HeartFill.svg";
 
+// 해당 일자리 컴포넌트
 const EachWork = () => {
   return (
     <EachWorkComponent>

@@ -3,6 +3,7 @@
 // KakaoMap.jsx
 import React, { useEffect, useState } from "react";
 
+// 회원가입시 지도 주소선택 페이지
 const KakaoMap = (props) => {
   const [keyword, setKeyword] = useState("");
   const [places, setPlaces] = useState([]);

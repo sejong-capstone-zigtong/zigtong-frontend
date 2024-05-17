@@ -1,24 +1,25 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import styled from "styled-components";
-import leftArrow from "../assets/workDetail/ArrowLeft.svg";
-import heart from "../assets/workDetail/Heart.svg";
-import testImg from "../assets/test/testBackground.png";
-import calendar from "../assets/searchWork/Calendar.svg";
-import clock from "../assets/searchWork/Clock.svg";
-import graph from "../assets/workDetail/Graph.svg";
-import clockBlack from "../assets/workDetail/ClockBlack.svg";
-import clockGray from "../assets/workDetail/ClockGray.svg";
-import forkBlack from "../assets/workDetail/ForkBlack.svg";
-import forkGray from "../assets/workDetail/ForkGray.svg";
-import shirtBlack from "../assets/workDetail/ShirtBlack.svg";
-import shirtGray from "../assets/workDetail/ShirtGray.svg";
-import parkingBlack from "../assets/workDetail/ParkingBlack.svg";
-import parkingGray from "../assets/workDetail/ParkingGray.svg";
-import carBlack from "../assets/workDetail/CarBlack.svg";
-import carGray from "../assets/workDetail/CarGray.svg";
-import homeIndicator from "../assets/workDetail/HomeIndicator.svg";
+import leftArrow from "assets/workDetail/ArrowLeft.svg";
+import heart from "assets/workDetail/Heart.svg";
+import testImg from "assets/test/testBackground.png";
+import calendar from "assets/searchWork/Calendar.svg";
+import clock from "assets/searchWork/Clock.svg";
+import graph from "assets/workDetail/Graph.svg";
+import clockBlack from "assets/workDetail/ClockBlack.svg";
+import clockGray from "assets/workDetail/ClockGray.svg";
+import forkBlack from "assets/workDetail/ForkBlack.svg";
+import forkGray from "assets/workDetail/ForkGray.svg";
+import shirtBlack from "assets/workDetail/ShirtBlack.svg";
+import shirtGray from "assets/workDetail/ShirtGray.svg";
+import parkingBlack from "assets/workDetail/ParkingBlack.svg";
+import parkingGray from "assets/workDetail/ParkingGray.svg";
+import carBlack from "assets/workDetail/CarBlack.svg";
+import carGray from "assets/workDetail/CarGray.svg";
+import homeIndicator from "assets/workDetail/HomeIndicator.svg";
 
+// 일자리 상세페이지
 const WorkDetail = () => {
   return (
     <WorkTotalComponent>

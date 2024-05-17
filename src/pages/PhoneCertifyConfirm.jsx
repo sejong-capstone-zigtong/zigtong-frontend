@@ -2,9 +2,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import icon from "../assets/sign/Icon.svg";
-import check from "../assets/sign/Check.svg";
+import icon from "assets/sign/Icon.svg";
+import check from "assets/sign/Check.svg";
 
+// 휴대폰 인증 완료화면
 const PhoneCertifyConfirm = () => {
   const navigate = useNavigate();
 

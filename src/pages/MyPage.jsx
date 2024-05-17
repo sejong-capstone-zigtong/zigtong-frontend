@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import styled from "styled-components";
-import Footer from "../components/common/Footer";
-import user from "../assets/profile/User.svg";
-import rightArrow from "../assets/mypage/RightArrow.svg";
+import Footer from "components/common/Footer";
+import user from "assets/profile/User.svg";
+import rightArrow from "assets/mypage/RightArrow.svg";
 
+// 마이페이지
 const MyPage = () => {
   return (
     <MyPageTotalComponent>

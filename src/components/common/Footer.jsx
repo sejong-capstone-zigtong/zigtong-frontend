@@ -1,18 +1,19 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import styled from "styled-components";
-import home from "../../assets/footer/Home.svg";
-import assignment from "../../assets/footer/Assignment.svg";
-import heart from "../../assets/footer/Heart.svg";
-import profile from "../../assets/footer/Profile.svg";
-import user from "../../assets/footer/User.svg";
-import fillHome from "../../assets/footer/FillHome.svg";
-import fillAssignment from "../../assets/footer/FillAssignment.svg";
-import fillHeart from "../../assets/footer/FillHeart.svg";
-import fillProfile from "../../assets/footer/FillProfile.svg";
-import fillUser from "../../assets/footer/FillUser.svg";
 import { useLocation, useNavigate } from "react-router-dom";
+import home from "assets/footer/Home.svg";
+import assignment from "assets/footer/Assignment.svg";
+import heart from "assets/footer/Heart.svg";
+import profile from "assets/footer/Profile.svg";
+import user from "assets/footer/User.svg";
+import fillHome from "assets/footer/FillHome.svg";
+import fillAssignment from "assets/footer/FillAssignment.svg";
+import fillHeart from "assets/footer/FillHeart.svg";
+import fillProfile from "assets/footer/FillProfile.svg";
+import fillUser from "assets/footer/FillUser.svg";
 
+// 아래 공통 footer 컴포넌트
 const Footer = () => {
   const location = useLocation();
 

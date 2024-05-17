@@ -2,11 +2,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import icon from "../assets/sign/Icon.svg";
-import KakaoMap from "./KakaoMap.jsx";
-import { motion, AnimatePresence } from "framer-motion";
-import { signUpApi } from "../apis/SignUpApis.jsx";
+import KakaoMap from "pages/KakaoMap.jsx";
+import { signUpApi } from "apis/SignUpApis.jsx";
+import icon from "assets/sign/Icon.svg";
 
+// 회원 가입 시 추가정보 받는 페이지
 const OtherInfo = () => {
   const navigate = useNavigate();
 
@@ -22,6 +22,8 @@ const OtherInfo = () => {
     nickname: "",
     // certificates: "",
   });
+
+  // 주요 직무 드롭다운
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
   const [selectedDropdown, setSelectedDropdown] = useState(null);
   const dropdownOptions = ["옵션 1", "옵션 2", "옵션 3"]; // 드롭다운에 표시할 옵션들
@@ -33,8 +35,8 @@ const OtherInfo = () => {
     setIsOpenDropdown(false);
   };
 
+  // 지도 맵 킬지 여부
   const [mapToggle, setMapToggle] = useState(false);
-
   const handleMapToggle = () => {
     setMapToggle(!mapToggle);
   };
@@ -48,6 +50,7 @@ const OtherInfo = () => {
     });
   };
 
+  // 성별 선택
   const onClickGender = (e) => {
     const value = e.target.value;
     setUserInfo({
@@ -56,6 +59,7 @@ const OtherInfo = () => {
     });
   };
 
+  // 생년월일 입력
   const onChangeBirthDate = (e) => {
     const value = e.target.value;
     setUserInfo({
@@ -63,14 +67,13 @@ const OtherInfo = () => {
       birthdate: value,
     });
   };
-
   const isValidDate = (dateString) => {
     // 정규 표현식을 이용하여 YYYY-MM-DD 형식인지 확인
     const regex = /^\d{4}-\d{2}-\d{2}$/;
     return regex.test(dateString);
   };
 
-  // 이름 입력 함수
+  // 이름 입력
   const onChangeNickname = (e) => {
     const value = e.target.value;
     setUserInfo({
@@ -79,6 +82,7 @@ const OtherInfo = () => {
     });
   };
 
+  // 회원가입
   const signup = async () => {
     try {
       await signUpApi(userInfo).then((res) => {
@@ -91,6 +95,7 @@ const OtherInfo = () => {
     }
   };
 
+  // 회원가입 버튼 눌렀을 때
   const onClickSignUp = () => {
     if (!isValidDate(userInfo.birthdate)) {
       alert("올바른 생년월일 형식으로 작성해주세요");
