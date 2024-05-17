@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import testImg from "../../assets/test/TestCompany.png";
-import testImgAssignment from "../../assets/test/TestAssignment.png";
-import distancePin from "../../assets/assignment/DistancePin.svg";
+import testImg from "assets/test/TestCompany.png";
+import testImgAssignment from "assets/test/TestAssignment.png";
+import distancePin from "assets/assignment/DistancePin.svg";
 
+// 배정된 일자리 리스트
 const AssignmentList = () => {
   return (
     <TotalAssignmentWorks>

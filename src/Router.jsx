@@ -1,18 +1,25 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Outer from "./pages/Outer";
-import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import PhoneCertify from "./pages/PhoneCertify";
-import PhoneCertifyConfirm from "./pages/PhoneCertifyConfirm";
-import Terms from "./pages/Terms";
-import OtherInfo from "./pages/OtherInfo";
-import SearchWork from "./pages/SearchWork";
-import WorkDetail from "./pages/WorkDetail";
-import Assignment from "./pages/Assignment";
-import SavedWorks from "./pages/SavedWork";
-import Profile from "./pages/Profile";
-import MyPage from "./pages/MyPage";
+import Outer from "pages/worker/Outer";
+// 랜딩
+import Landing from "pages/common/Landing";
+// 로그인
+import Login from "pages/common/Login";
+// 회원가입
+import PhoneCertify from "pages/worker/signup/PhoneCertify";
+import PhoneCertifyConfirm from "pages/worker/signup/PhoneCertifyConfirm";
+import Terms from "pages/worker/signup/Terms";
+import OtherInfo from "pages/worker/signup/OtherInfo";
+// 일자리 찾기
+import SearchWork from "pages/worker/works/SearchWork";
+import WorkDetail from "pages/worker/works/WorkDetail";
+// 일자리 배정
+import Assignment from "pages/worker/works/Assignment";
+// 찜한 일자리
+import SavedWorks from "pages/worker/works/SavedWork";
+// 프로필
+import Profile from "pages/worker/profile/Profile";
+import MyPage from "pages/worker/profile/MyPage";
 
 const Router = () => {
   return (

@@ -1,20 +1,27 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import icon from "../assets/sign/Icon.svg";
-import eyeOff from "../assets/sign/EyeOff.svg";
-import eyeOpen from "../assets/sign/EyeOpen.svg";
-import naver from "../assets/sign/Naver.svg";
-import kakao from "../assets/sign/Kakao.svg";
-import bar from "../assets/sign/BarImg.svg";
-import { loginApi } from "../apis/LoginApis";
+import { userAccessTokenState } from "recoil/atoms";
+import { loginApi } from "apis/LoginApis";
+import icon from "assets/sign/Icon.svg";
+import eyeOff from "assets/sign/EyeOff.svg";
+import eyeOpen from "assets/sign/EyeOpen.svg";
+import naver from "assets/sign/Naver.svg";
+import kakao from "assets/sign/Kakao.svg";
+import bar from "assets/sign/BarImg.svg";
 
+// 로그인 페이지
 const Login = () => {
   const navigate = useNavigate();
 
+  // 리코일 어세스토큰 저장
+  const [accessToken, setAccessToken] = useRecoilState(userAccessTokenState);
+
   // 패스워드 보일지 안보일지
   const [isOpenPassword, setIsOpenPassword] = useState(false);
+
   //로그인 시 유저정보 저장
   const [userInfo, setUserInfo] = useState({
     memberAccount: "",
@@ -55,7 +62,8 @@ const Login = () => {
   const onLogin = async () => {
     try {
       await loginApi(userInfo).then((res) => {
-        localStorage.setItem("accessToken", res.data.data.accessToken);
+        console.log(res.data.data.accessToken);
+        setAccessToken(res.data.data.accessToken);
         navigate("/works");
       });
     } catch (err) {

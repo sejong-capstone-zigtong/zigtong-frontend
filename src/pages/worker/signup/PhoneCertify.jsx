@@ -3,10 +3,11 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import icon from "../assets/sign/Icon.svg";
-import checkCircle from "../assets/sign/CheckCircleGreen.svg";
-import { phoneCertifyApi, confirmPhoneCertifyApi } from "../apis/SignUpApis";
+import { phoneCertifyApi, confirmPhoneCertifyApi } from "apis/SignUpApis";
+import icon from "assets/sign/Icon.svg";
+import checkCircle from "assets/sign/CheckCircleGreen.svg";
 
+// 핸드폰 인증페이지
 const PhoneCertify = () => {
   const navigate = useNavigate();
 
@@ -42,6 +43,7 @@ const PhoneCertify = () => {
     return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
   };
 
+  // 휴대폰에 인증코드 보내기
   const sendPhoneCertifyCode = async () => {
     try {
       if (receiver.length === 8) {
@@ -129,6 +131,7 @@ const PhoneCertify = () => {
         />
         {isActiveTimer && <AnswerCertifyTime>{formatTime(seconds)}</AnswerCertifyTime>}
       </AnswerCertifyInputComponent>
+      {/* 인증 번호 발생 */}
       <AnimatePresence>
         {isVisibleModal && (
           <motion.div initial="hidden" animate="visible" exit="hidden" variants={shakeAnimation}>
@@ -139,6 +142,7 @@ const PhoneCertify = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* 인증하기 버튼 */}
       {isActiveTimer && verificationCode.length > 0 ? (
         <CompleteCertifyBtn
           // onClick={() => {

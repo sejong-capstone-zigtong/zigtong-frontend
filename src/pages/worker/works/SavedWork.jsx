@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Footer from "../components/common/Footer";
-import TotalWorkListComponent from "../components/SavedWork/TotalWorkListComponent";
+import Footer from "components/common/Footer";
+import TotalWorkListComponent from "components/SavedWork/TotalWorkListComponent";
 
+// 찜한 일자리 페이지
 const SavedWorks = () => {
   return (
     <SavedWorkTotalComponent>

@@ -2,11 +2,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import icon from "../assets/sign/Icon.svg";
-import checkCircleGray from "../assets/sign/CheckCircleGray.svg";
-import checkCircleBlack from "../assets/sign/CheckCircleBlack.svg";
-import { accountDuplicationApi } from "../apis/SignUpApis";
+import { accountDuplicationApi } from "apis/SignUpApis";
+import icon from "assets/sign/Icon.svg";
+import checkCircleGray from "assets/sign/CheckCircleGray.svg";
+import checkCircleBlack from "assets/sign/CheckCircleBlack.svg";
 
+// 이용약관 페이지
 const Terms = () => {
   const navigate = useNavigate();
   const { state } = useLocation();

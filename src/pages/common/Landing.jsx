@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import landingBackground from "../assets/landing/LandingBackground.svg";
-import rigthArrow from "../assets/landing/RightArrow.svg";
 import { useNavigate } from "react-router-dom";
+import landingBackground from "assets/landing/LandingBackground.svg";
+import rigthArrow from "assets/landing/RightArrow.svg";
 
+// 랜딩페이지
 const Landing = () => {
   const navigate = useNavigate();
 

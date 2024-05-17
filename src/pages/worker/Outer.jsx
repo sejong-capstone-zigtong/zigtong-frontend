@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
 
+// 제일 외곽 공통
 const Outer = () => {
   return (
     <TotalBrowserComponent>

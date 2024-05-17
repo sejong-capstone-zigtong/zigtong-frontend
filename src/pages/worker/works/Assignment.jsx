@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Footer from "../components/common/Footer";
-import AssignmentList from "../components/assignment/AssignmentList";
+import Footer from "components/common/Footer";
+import AssignmentList from "components/assignment/AssignmentList";
 
+// 배정내역 페이지
 const Assignment = () => {
   return (
     <AssignmentTotalComponent>

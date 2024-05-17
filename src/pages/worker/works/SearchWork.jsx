@@ -1,14 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 // import { useNavigate } from "react-router-dom";
-import { WorkList } from "../data/WorkData";
-import { FilterList } from "../data/WorkData";
-import Footer from "../components/common/Footer";
-import arrowDown from "../assets/searchWork/ArrowDown.svg";
-import bell from "../assets/searchWork/Bell.svg";
-import xIcon from "../assets/searchWork/XGray.svg";
-import TotalWorkListComponent from "../components/searchWork/TotalWorkListComponent";
+import TotalWorkListComponent from "components/searchWork/TotalWorkListComponent";
+import { WorkList } from "data/WorkData";
+import { FilterList } from "data/WorkData";
+import Footer from "components/common/Footer";
+import arrowDown from "assets/searchWork/ArrowDown.svg";
+import bell from "assets/searchWork/Bell.svg";
+import xIcon from "assets/searchWork/XGray.svg";
 
+// 일자리 메인페이지
 const SearchWork = () => {
   //   const navigate = useNavigate();
 
@@ -29,11 +30,13 @@ const SearchWork = () => {
           <XIcon src={xIcon} alt="X" />
         </EachRegion>
       </RegionsComponent>
+      {/* 일자리 필터 */}
       <WorkListComponent>
         {WorkList.map((item) => {
           return <WorkListText key={item.value}>{item.label}</WorkListText>;
         })}
       </WorkListComponent>
+      {/* 필터 리스트 */}
       <FilterListComponent>
         {FilterList.map((item) => {
           if (item.label === "금구")
@@ -47,6 +50,7 @@ const SearchWork = () => {
           }
         })}
       </FilterListComponent>
+      {/* 해당 필터에 해당하는 일자리 리스트 */}
       <TotalWorkListComponent />
       <Footer />
     </SearchWorkTotalComponent>
