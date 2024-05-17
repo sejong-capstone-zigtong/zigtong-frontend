@@ -8,5 +8,3 @@ export const loginApi = (userInfo) => {
     password: userInfo.password,
   });
 };
-
-// export const getUserInfoApi=()
