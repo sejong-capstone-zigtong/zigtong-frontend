@@ -1,25 +1,25 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Outer from "pages/Outer";
+import Outer from "pages/worker/Outer";
 // 랜딩
-import Landing from "pages/Landing";
+import Landing from "pages/common/Landing";
 // 로그인
-import Login from "pages/Login";
+import Login from "pages/common/Login";
 // 회원가입
-import PhoneCertify from "pages/PhoneCertify";
-import PhoneCertifyConfirm from "pages/PhoneCertifyConfirm";
-import Terms from "pages/Terms";
-import OtherInfo from "pages/OtherInfo";
+import PhoneCertify from "pages/worker/PhoneCertify";
+import PhoneCertifyConfirm from "pages/worker/PhoneCertifyConfirm";
+import Terms from "pages/worker/Terms";
+import OtherInfo from "pages/worker/OtherInfo";
 // 일자리 찾기
-import SearchWork from "pages/SearchWork";
-import WorkDetail from "pages/WorkDetail";
+import SearchWork from "pages/worker/SearchWork";
+import WorkDetail from "pages/worker/WorkDetail";
 // 일자리 배정
-import Assignment from "pages/Assignment";
+import Assignment from "pages/worker/Assignment";
 // 찜한 일자리
-import SavedWorks from "pages/SavedWork";
+import SavedWorks from "pages/worker/SavedWork";
 // 프로필
-import Profile from "pages/Profile";
-import MyPage from "pages/MyPage";
+import Profile from "pages/worker/Profile";
+import MyPage from "pages/worker/MyPage";
 
 const Router = () => {
   return (

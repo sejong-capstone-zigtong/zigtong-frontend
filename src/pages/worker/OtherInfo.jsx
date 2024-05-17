@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import KakaoMap from "pages/KakaoMap.jsx";
+import KakaoMap from "pages/worker/KakaoMap.jsx";
 import { signUpApi } from "apis/SignUpApis.jsx";
 import icon from "assets/sign/Icon.svg";
 
