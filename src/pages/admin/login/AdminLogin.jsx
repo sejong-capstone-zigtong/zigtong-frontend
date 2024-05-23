@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { useRecoilState } from "recoil";
@@ -14,7 +13,7 @@ import kakao from "assets/sign/Kakao.svg";
 import bar from "assets/sign/BarImg.svg";
 
 // 로그인 페이지
-const Login = () => {
+const AdminLogin = () => {
   const navigate = useNavigate();
 
   // 리코일 어세스토큰 저장
@@ -83,7 +82,7 @@ const Login = () => {
         src={icon}
         alt="icon"
       />
-      <LoginText>로그인</LoginText>
+      <LoginText>관리자 로그인</LoginText>
       <LoginId onChange={onChangeAccount} type="text" value={memberAccount} placeholder="아이디" />
       <LoginPasswordTotalComponent>
         {/* 비밀번호 보일 때, 안보일 때 */}
@@ -125,17 +124,17 @@ const Login = () => {
       </LoginPasswordTotalComponent>
       <UnderSelfLoginComponent>
         <UnderSelfLoginLine />
-        <UnderSelfLoginText>또는</UnderSelfLoginText>
+        {/* <UnderSelfLoginText>또는</UnderSelfLoginText> */}
         <UnderSelfLoginLine />
       </UnderSelfLoginComponent>
-      <SocialLoginComponent margin="27px 0px 0px 0px" color="#fff" backgroundColor="#5AC466">
+      {/* <SocialLoginComponent margin="27px 0px 0px 0px" color="#fff" backgroundColor="#5AC466">
         <SocialLoginIcon src={naver} alt="N" />
         <SocailLoginText>네이버 로그인</SocailLoginText>
       </SocialLoginComponent>
       <SocialLoginComponent color="#000" backgroundColor="#FEE500">
         <SocialLoginIcon src={kakao} alt="K" />
         <SocailLoginText>카카오 로그인</SocailLoginText>
-      </SocialLoginComponent>
+      </SocialLoginComponent> */}
       <SearchInfoComponent>
         <SearchInfoText>비밀번호 찾기</SearchInfoText>
         <SearchInfoBar src={bar} alt="|" />
@@ -144,17 +143,16 @@ const Login = () => {
       <NotUserText>아직 직통의 회원이 아니라면?</NotUserText>
       <SignUpText
         onClick={() => {
-          navigate("/signup/phoneCertifyConfirm");
+          navigate("/admin/signup/BusinessNumber");
         }}
       >
-        회원가입
+        관리자 회원가입
       </SignUpText>
-      <ManagerLoginText onClick={() => navigate("/admin/login")}>관리자 로그인</ManagerLoginText>
     </LoginTotalComponent>
   );
 };
 
-export default Login;
+export default AdminLogin;
 
 const LoginTotalComponent = styled.div`
   width: 100%;
