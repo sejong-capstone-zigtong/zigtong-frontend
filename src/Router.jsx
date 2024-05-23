@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Outer from "pages/worker/Outer";
 // 랜딩
 import Landing from "pages/common/Landing";
+
+// Worker
+
 // 로그인
 import Login from "pages/common/Login";
 // 회원가입
@@ -21,6 +24,18 @@ import SavedWorks from "pages/worker/works/SavedWork";
 import Profile from "pages/worker/profile/Profile";
 import MyPage from "pages/worker/profile/MyPage";
 
+// Admin
+
+// 로그인
+import AdminLogin from "pages/admin/login/AdminLogin";
+import BusinessNumber from "pages/admin/signup/BusinessNumber";
+import Account from "pages/admin/signup/Account";
+import CompanyName from "pages/admin/signup/CompanyName";
+import CompanyAddress from "pages/admin/signup/CompanyAddress";
+import CompanySector from "pages/admin/signup/CompanySector";
+import AdminHome from "pages/admin/home/AdminHome";
+// 회원가입
+
 const Router = () => {
   return (
     <BrowserRouter>
@@ -38,6 +53,17 @@ const Router = () => {
           <Route path="/works/saved" element={<SavedWorks />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/mypage" element={<MyPage />} />
+          <Route path="admin">
+            <Route index path="" element={<AdminHome />} />
+            <Route path="login" element={<AdminLogin />} />
+            <Route path="signup">
+              <Route path="businessNumber" element={<BusinessNumber />} />
+              <Route path="account" element={<Account />} />
+              <Route path="companyName" element={<CompanyName />} />
+              <Route path="companyAddress" element={<CompanyAddress />} />
+              <Route path="companySector" element={<CompanySector />} />
+            </Route>
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

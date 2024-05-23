@@ -1,6 +1,7 @@
+/* eslint-disable no-undef */
 import axios from "axios";
 
-const url = "http://3.36.50.107:8080";
+const url = `http://${process.env.REACT_APP_WORKER_SERVER_URL}`;
 
 export const loginApi = (userInfo) => {
   return axios.post(`${url}/api/client/v1/auth/sign-in`, {

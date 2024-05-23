@@ -12,9 +12,24 @@ const PhoneCertifyConfirm = () => {
   // const { state } = useLocation();
   // const [userInfo, setUserInfo] = useState(state.userInfo);
 
+  // const [userInfo, setUserInfo] = useState({
+  //   phoneNumber: "01054851325",
+  // });
+
   const [userInfo, setUserInfo] = useState({
-    phoneNumber: "01054851325",
+    phoneNumber: "",
   });
+
+  const { phoneNumber } = userInfo;
+
+  const onChangePhoneNumber = (e) => {
+    const value = e.target.value;
+    setUserInfo({
+      ...userInfo,
+      phoneNumber: value,
+    });
+  };
+
   return (
     <PhoneCertifyConfirmTotalComponent>
       <IconComponent
@@ -25,14 +40,21 @@ const PhoneCertifyConfirm = () => {
         alt="icon"
       />
       <PhoneLabel>휴대폰 번호</PhoneLabel>
-      <PhoneTotalComponent>
+      <PhoneInputComponent>
+        <PhoneInput
+          value={phoneNumber}
+          placeholder="핸드폰 번호 입력"
+          onChange={onChangePhoneNumber}
+        />
+      </PhoneInputComponent>
+      {/* <PhoneTotalComponent>
         <PhoneComponent>
           <PhoneTextFirst>{userInfo.phoneNumber.substring(0, 3)}</PhoneTextFirst>
           <PhoneTextOther>{userInfo.phoneNumber.substring(3, 7)}</PhoneTextOther>
           <PhoneTextOther>{userInfo.phoneNumber.substring(7)}</PhoneTextOther>
           <PhoneCheckImg src={check} alt="V" />
         </PhoneComponent>
-      </PhoneTotalComponent>
+      </PhoneTotalComponent> */}
       <SignUpBtn
         onClick={() => {
           navigate("/signup/terms", {
@@ -119,4 +141,23 @@ const SignUpBtn = styled.button`
   font-size: 20px;
   font-weight: 600;
   cursor: pointer;
+`;
+
+const PhoneInputComponent = styled.div`
+  margin: 9px 0px 0px 0px;
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const PhoneInput = styled.input`
+  padding: 0px 0px 0px 15.48px;
+  width: 354px;
+  height: 44px;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 16px;
+  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.4);
+  border: none;
+  outline: none;
 `;
