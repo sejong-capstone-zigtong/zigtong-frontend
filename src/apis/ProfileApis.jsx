@@ -68,3 +68,36 @@ export const putCertificateApi = (accessToken, certificateIds) => {
     },
   );
 };
+
+export const getProfileImageApi = (accessToken) => {
+  return axios.get(`${url}/api/client/v1/resume/profile-image`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+
+export const updateProfileImageApi = (accessToken, profileImage) => {
+  const formData = new FormData();
+  if (profileImage) {
+    formData.append("profileImage", profileImage);
+  }
+  return axios.put(`${url}/api/client/v1/resume/profile-image`, formData, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const getSkillCategoryApi = () => {
+  return axios.get(`${url}/api/client/v1/skill/category`);
+};
+
+export const getSkillAll = () => {
+  return axios.get(`${url}/api/client/v1/skill`);
+};
+
+export const getSkill = (category) => {
+  return axios.get(`${url}/api/client/v1/skill?category=${category}`);
+};

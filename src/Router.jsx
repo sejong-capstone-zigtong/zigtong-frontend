@@ -34,6 +34,9 @@ import CompanyName from "pages/admin/signup/CompanyName";
 import CompanyAddress from "pages/admin/signup/CompanyAddress";
 import CompanySector from "pages/admin/signup/CompanySector";
 import AdminHome from "pages/admin/home/AdminHome";
+import NewWork from "pages/admin/work/NewWork";
+import ApplicantInquiry from "pages/admin/work/ApplicantInquiry";
+import SettlementStatus from "pages/admin/work/SettlementStatus";
 // 회원가입
 
 const Router = () => {
@@ -63,6 +66,11 @@ const Router = () => {
               <Route path="companyAddress" element={<CompanyAddress />} />
               <Route path="companySector" element={<CompanySector />} />
             </Route>
+            <Route path="works">
+              <Route path="new" element={<NewWork />} />
+            </Route>
+            <Route path="applicants" element={<ApplicantInquiry />} />
+            <Route path="applicants/settlementStatus" element={<SettlementStatus />} />
           </Route>
         </Route>
       </Routes>
