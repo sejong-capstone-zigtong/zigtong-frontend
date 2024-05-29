@@ -16,3 +16,12 @@ export const userInfoState = atom({
   default: {},
   effects: [persistAtom],
 });
+
+export const adminInfoState = atom({
+  key: "adminInfoState",
+  default: {
+    accessToken: "",
+    adminId: -1,
+  },
+  effects: [persistAtom],
+});

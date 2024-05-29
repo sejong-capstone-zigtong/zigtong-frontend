@@ -6,32 +6,67 @@ import xIcon from "assets/adminSignup/XIcon.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { SignUpAdminApi, getCategoryApi } from "apis/AdminApis";
 
 const CompanySector = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(location.state.userInfo);
   const { category } = userInfo;
-  console.log(userInfo);
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setUserInfo({
-      ...userInfo,
-      [name]: value,
-    });
-  };
 
-  const nextSignUp = () => {
+  const [categoryList, setCategoryList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [openCategoryModal, setOpenCategoryModal] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (searchTerm === "") {
+        setOpenCategoryModal(false);
+        setFilteredCategories([]);
+      } else {
+        setOpenCategoryModal(true);
+        setFilteredCategories(
+          categoryList.filter((category) => category.industryName.startsWith(searchTerm)),
+        );
+        console.log(
+          categoryList.filter((category) => category.industryName.startsWith(searchTerm)),
+        );
+      }
+    } catch (error) {
+      console.error("Error filtering categories:", error);
+      setFilteredCategories([]);
+    }
+  }, [searchTerm]);
+
+  const nextSignUp = async () => {
     if (category === "") {
       alert("업종을 선택해주세요");
     } else {
-      navigate("/admin/signup/companySector", {
-        state: {
-          userInfo: userInfo,
-        },
-      });
+      try {
+        await SignUpAdminApi(userInfo).then((res) => {
+          navigate("/admin/login");
+        });
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
+
+  const getCategory = async () => {
+    try {
+      await getCategoryApi().then((res) => {
+        console.log(res);
+        setCategoryList(res.data);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getCategory();
+  }, []);
 
   return (
     <TotalComponent>
@@ -40,14 +75,40 @@ const CompanySector = () => {
       <BusinessLabel>업종을 알려주세요</BusinessLabel>
       <BusinessDescription>어떤 서비스를 제공하는 곳인지 알려주세요</BusinessDescription>
       <BusinessNumberWrapper>
-        <BusinessNumberInput width="329px" />
+        <BusinessNumberInput
+          width="329px"
+          value={searchTerm}
+          placeholder="업종 검색을 해주세요"
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        {openCategoryModal && filteredCategories.length > 0 && (
+          <FilteredCategoriesWrapper>
+            {filteredCategories.map((category, index) => (
+              <EachFilter
+                key={index}
+                onClick={() => {
+                  setUserInfo({
+                    ...userInfo,
+                    category: category.industryName,
+                  });
+                  setSearchTerm(category.industryName);
+                  setOpenCategoryModal(false);
+                }}
+              >
+                {category.industryName} ({category.industryCode})
+              </EachFilter>
+            ))}
+          </FilteredCategoriesWrapper>
+        )}
       </BusinessNumberWrapper>
 
       <BtnWrapper>
         <Btn backgroundColor="#646464" onClick={() => navigate(-1)}>
           이전
         </Btn>
-        <Btn backgroundColor="#006FFD">다음</Btn>
+        <Btn backgroundColor="#006FFD" onClick={nextSignUp}>
+          다음
+        </Btn>
       </BtnWrapper>
     </TotalComponent>
   );
@@ -103,23 +164,6 @@ const BusinessDescription = styled.div`
   margin: 0px 0px 0px 20px;
 `;
 
-const BusinessAddressText = styled.div`
-  display: flex;
-  width: 47px;
-  height: 19px;
-  flex-direction: column;
-  justify-content: center;
-  flex-shrink: 0;
-  color: #000;
-  text-align: center;
-  font-family: "Pretendard Variable";
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 12px; /* 85.714% */
-  margin: 27px 0px 0px 9px;
-`;
-
 const BusinessNumberWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -138,6 +182,18 @@ const BusinessNumberInput = styled.input`
   &::placeholder {
     color: #767676;
   }
+`;
+
+const FilteredCategoriesWrapper = styled.div`
+  position: absolute;
+  top: 180px;
+  width: 329px;
+  height: 500px;
+  overflow-y: auto;
+  background-color: white;
+  color: #000;
+  border: 1px solid #ccc;
+  z-index: 1000;
 `;
 
 const BtnWrapper = styled.div`
@@ -167,4 +223,13 @@ const Btn = styled.button`
   font-weight: 500;
   line-height: 20px; /* 125% */
   margin: 0px 3.5px;
+`;
+
+const EachFilter = styled.div`
+  cursor: pointer;
+  padding: 8px;
+  border-bottom: 1px solid #f1f1f1;
+  &:hover {
+    background-color: #f1f1f1;
+  }
 `;

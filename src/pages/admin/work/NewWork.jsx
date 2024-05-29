@@ -5,11 +5,16 @@ import xIcon from "assets/adminSignup/XIcon.svg";
 import picture from "assets/adminWork/picture.svg";
 import bottomArrow from "assets/adminWork/bottomArrow.svg";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { PostWorkApi } from "apis/AdminApis";
+import { useEffect, useState } from "react";
+import { MakePostApi, getCategoryApi } from "apis/AdminApis";
+import { adminInfoState } from "recoil/atoms";
+import { useRecoilValue } from "recoil";
 
 const NewWork = () => {
+  const adminInfo = useRecoilValue(adminInfoState);
+
   const [workInfo, setWorkInfo] = useState({
+    title: "",
     content: "",
     category: "건설업",
     numberOfRecruits: 0,
@@ -17,14 +22,25 @@ const NewWork = () => {
     endTime: "",
     recruitmentStartTime: "",
     recruitmentEndTime: "",
-    lunchTime: "",
+    lunchStartTime: "",
+    lunchEndTime: "",
     wageType: "",
     wage: 0,
     address: "",
     phoneNumber: "",
   });
-  const { content, category, numberOfRecruits, lunchTime, wageType, wage, address, phoneNumber } =
-    workInfo;
+  const {
+    title,
+    content,
+    category,
+    numberOfRecruits,
+    lunchStartTime,
+    lunchEndTime,
+    wageType,
+    wage,
+    address,
+    phoneNumber,
+  } = workInfo;
 
   const navigate = useNavigate();
 
@@ -138,11 +154,19 @@ const NewWork = () => {
     });
   };
 
-  const onChangeLunchTime = (e) => {
+  const onChangeLunchStartTime = (e) => {
     const value = e.target.value;
     setWorkInfo({
       ...workInfo,
-      lunchTime: value,
+      lunchStartTime: value,
+    });
+  };
+
+  const onChangeLunchEndTime = (e) => {
+    const value = e.target.value;
+    setWorkInfo({
+      ...workInfo,
+      lunchEndTime: value,
     });
   };
 
@@ -174,8 +198,10 @@ const NewWork = () => {
 
   const submitWork = async () => {
     try {
-      if (content === "") {
+      if (title === "") {
         alert("제목을 입력해주세요");
+      } else if (content === "") {
+        alert("구인 내용 요약을 적어주세요");
       } else if (category === "") alert("하는 일을 선택해주세요");
       else if (numberOfRecruits === 0) alert("채용 인원을 입력해주세요");
       else if (!isValidDateFormat(workStartDate))
@@ -194,20 +220,64 @@ const NewWork = () => {
         alert("올바른 채용 시작 시간 형식으로 입력해주세요");
       else if (!isValidTimeFormat(recruitEndTime))
         alert("올바른 채용 종료 시간 형식으로 입력해주세요");
-      else if (!isValidLunchTimeFormat(lunchTime)) alert("점심 시작시간을 임력해주세요");
+      else if (!isValidLunchTimeFormat(lunchStartTime)) alert("점심 시작시간을 입력해주세요");
+      else if (!isValidLunchTimeFormat(lunchEndTime)) alert("점심 종료시간을 입력해주세요");
       else if (wageType === "") alert("임금 타입을 선택해주세요");
       else if (wage === 0) alert("임금을 입력해주세요");
       else if (address === "") alert("주소를 입력해주세요");
       else if (phoneNumber === "") alert("연락처를 입력해주세요");
       else {
-        await PostWorkApi(workInfo).then((res) => {
+        await MakePostApi(adminInfo.accessToken, workInfo).then((res) => {
           console.log(res);
+          if (res.status === 200) {
+            navigate("/admin");
+          }
         });
       }
     } catch (err) {
       console.log(err);
     }
   };
+
+  const [categoryList, setCategoryList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [openCategoryModal, setOpenCategoryModal] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (searchTerm === "") {
+        setOpenCategoryModal(false);
+        setFilteredCategories([]);
+      } else {
+        setOpenCategoryModal(true);
+        setFilteredCategories(
+          categoryList.filter((category) => category.industryName.startsWith(searchTerm)),
+        );
+        console.log(
+          categoryList.filter((category) => category.industryName.startsWith(searchTerm)),
+        );
+      }
+    } catch (error) {
+      console.error("Error filtering categories:", error);
+      setFilteredCategories([]);
+    }
+  }, [searchTerm]);
+
+  const getCategory = async () => {
+    try {
+      await getCategoryApi().then((res) => {
+        console.log(res);
+        setCategoryList(res.data);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getCategory();
+  }, []);
 
   return (
     <Container>
@@ -216,14 +286,40 @@ const NewWork = () => {
       <LabelDescription>일하는 공간이나 일과 관련된 사진을 올려보세요.</LabelDescription>
       <CaptureIcon src={picture} />
       <Label margin="18px 0px 0px 24px">제목</Label>
+      <SeekContent onChange={onChange} name="title" value={title} placeholder="구인 제목 입력" />
+      <Label margin="24px 0px 0px 24px">하는일</Label>
       <SeekContent
+        value={searchTerm}
+        placeholder="업종 검색을 해주세요"
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      {openCategoryModal && filteredCategories.length > 0 && (
+        <FilteredCategoriesWrapper>
+          {filteredCategories.map((category, index) => (
+            <EachFilter
+              key={index}
+              onClick={() => {
+                setWorkInfo({
+                  ...workInfo,
+                  category: category.industryName,
+                });
+                setSearchTerm(category.industryName);
+                setOpenCategoryModal(false);
+              }}
+            >
+              {category.industryName} ({category.industryCode})
+            </EachFilter>
+          ))}
+        </FilteredCategoriesWrapper>
+      )}
+      <Label margin="24px 0px 0px 24px">구인 내용 요약</Label>
+      <ContentArea
         onChange={onChange}
         name="content"
         value={content}
-        placeholder="구인 내용 요약"
+        placeholder="예)  업무 예시, 근무 여건, 지원자가 갖추어야 할 
+능력, 우대 사항 등"
       />
-      <Label margin="24px 0px 0px 24px">하는일</Label>
-      <SeekContent placeholder="스킬 검색" />
       <Label margin="24px 0px 0px 24px">모집 인원수</Label>
       <SeekContent
         onChange={handleNumberOfRecruitsChange}
@@ -275,8 +371,14 @@ const NewWork = () => {
       </DateWrapper>
       <Label margin="24px 0px 0px 24px">점심시간 시작</Label>
       <SeekContent
-        value={lunchTime}
-        onChange={onChangeLunchTime}
+        value={lunchStartTime}
+        onChange={onChangeLunchStartTime}
+        placeholder="HH:MM 형식으로 입력"
+      />
+      <Label margin="24px 0px 0px 24px">점심시간 종료</Label>
+      <SeekContent
+        value={lunchEndTime}
+        onChange={onChangeLunchEndTime}
         placeholder="HH:MM 형식으로 입력"
       />
       <Label margin="24px 0px 0px 24px">임금</Label>
@@ -359,6 +461,7 @@ const NewWork = () => {
 export default NewWork;
 
 const Container = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
@@ -616,4 +719,47 @@ const WageModalEachWrapper = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: 12px; /* 85.714% */
+`;
+
+const ContentArea = styled.textarea`
+  width: 329px;
+  height: 160px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  border: 1px solid #000;
+  align-self: center;
+  background: #fff;
+  color: #000;
+  font-family: "Pretendard Variable";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 20px; /* 166.667% */
+  padding: 8px 18px;
+  margin: 12px 0px 0px 0px;
+  &::placeholder {
+    color: #767676;
+  }
+`;
+
+const FilteredCategoriesWrapper = styled.div`
+  position: absolute;
+  top: 360px;
+  left: 26px;
+  width: 329px;
+  height: 500px;
+  overflow-y: auto;
+  background-color: white;
+  color: #000;
+  border: 1px solid #ccc;
+  z-index: 1000;
+`;
+
+const EachFilter = styled.div`
+  cursor: pointer;
+  padding: 8px;
+  border-bottom: 1px solid #f1f1f1;
+  &:hover {
+    background-color: #f1f1f1;
+  }
 `;

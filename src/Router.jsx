@@ -37,6 +37,8 @@ import AdminHome from "pages/admin/home/AdminHome";
 import NewWork from "pages/admin/work/NewWork";
 import ApplicantInquiry from "pages/admin/work/ApplicantInquiry";
 import SettlementStatus from "pages/admin/work/SettlementStatus";
+import AdminWorksDetail from "pages/admin/work/WorkDetail";
+import ApplicantProfile from "pages/admin/work/ApplicantProfile";
 // 회원가입
 
 const Router = () => {
@@ -68,9 +70,13 @@ const Router = () => {
             </Route>
             <Route path="works">
               <Route path="new" element={<NewWork />} />
+              <Route path=":postId">
+                <Route index path="" element={<AdminWorksDetail />} />
+                <Route path="applicants" element={<ApplicantInquiry />} />
+              </Route>
             </Route>
-            <Route path="applicants" element={<ApplicantInquiry />} />
             <Route path="applicants/settlementStatus" element={<SettlementStatus />} />
+            <Route path="applicants/profile" element={<ApplicantProfile />} />
           </Route>
         </Route>
       </Routes>

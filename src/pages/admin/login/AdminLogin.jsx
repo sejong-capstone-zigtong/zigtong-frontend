@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { userAccessTokenState } from "recoil/atoms";
+import { adminInfoState, userAccessTokenState } from "recoil/atoms";
 import { loginApi } from "apis/LoginApis";
 import icon from "assets/sign/Icon.svg";
 import eyeOff from "assets/sign/EyeOff.svg";
@@ -11,30 +11,30 @@ import eyeOpen from "assets/sign/EyeOpen.svg";
 import naver from "assets/sign/Naver.svg";
 import kakao from "assets/sign/Kakao.svg";
 import bar from "assets/sign/BarImg.svg";
+import { LoginAdminApi } from "apis/AdminApis";
 
 // 로그인 페이지
 const AdminLogin = () => {
   const navigate = useNavigate();
 
-  // 리코일 어세스토큰 저장
-  const [accessToken, setAccessToken] = useRecoilState(userAccessTokenState);
+  const [adminInfo, setAdminInfo] = useRecoilState(adminInfoState);
 
   // 패스워드 보일지 안보일지
   const [isOpenPassword, setIsOpenPassword] = useState(false);
 
   //로그인 시 유저정보 저장
   const [userInfo, setUserInfo] = useState({
-    memberAccount: "",
+    accountId: "",
     password: "",
   });
-  const { memberAccount, password } = userInfo;
+  const { accountId, password } = userInfo;
 
   //아이디, 비밀번호 바뀔때 실행 함수
   const onChangeAccount = (e) => {
     const value = e.target.value;
     setUserInfo({
       ...userInfo,
-      memberAccount: value,
+      accountId: value,
     });
   };
   const onChangePassword = (e) => {
@@ -48,7 +48,7 @@ const AdminLogin = () => {
   // 패스워드에서 엔터키 누르면 아래 함수 실행
   const onPasswordKeyDown = (event) => {
     if (event.key === "Enter") {
-      if (userInfo.memberAccount == "") {
+      if (userInfo.accountId == "") {
         alert("아이디를 입력해주세요");
       } else if (userInfo.password == "") {
         alert("비밀번호를 입력해주세요");
@@ -61,15 +61,17 @@ const AdminLogin = () => {
   // 로그인 api
   const onLogin = async () => {
     try {
-      await loginApi(userInfo).then((res) => {
-        console.log(res.data.data.accessToken);
-        setAccessToken(res.data.data.accessToken);
-        navigate("/works");
+      await LoginAdminApi(userInfo).then((res) => {
+        if (res.status === 200) {
+          setAdminInfo({
+            accessToken: res.data.accessToken,
+            adminId: res.data.id,
+          });
+          navigate("/admin");
+        }
       });
     } catch (err) {
-      if (err.response.data.data.message === "존재하지 않는 회원입니다.") {
-        alert("존재하지 않는 회원입니다.");
-      }
+      console.log(err);
     }
   };
 
@@ -83,7 +85,7 @@ const AdminLogin = () => {
         alt="icon"
       />
       <LoginText>관리자 로그인</LoginText>
-      <LoginId onChange={onChangeAccount} type="text" value={memberAccount} placeholder="아이디" />
+      <LoginId onChange={onChangeAccount} type="text" value={accountId} placeholder="아이디" />
       <LoginPasswordTotalComponent>
         {/* 비밀번호 보일 때, 안보일 때 */}
         {isOpenPassword ? (
@@ -124,17 +126,9 @@ const AdminLogin = () => {
       </LoginPasswordTotalComponent>
       <UnderSelfLoginComponent>
         <UnderSelfLoginLine />
-        {/* <UnderSelfLoginText>또는</UnderSelfLoginText> */}
         <UnderSelfLoginLine />
       </UnderSelfLoginComponent>
-      {/* <SocialLoginComponent margin="27px 0px 0px 0px" color="#fff" backgroundColor="#5AC466">
-        <SocialLoginIcon src={naver} alt="N" />
-        <SocailLoginText>네이버 로그인</SocailLoginText>
-      </SocialLoginComponent>
-      <SocialLoginComponent color="#000" backgroundColor="#FEE500">
-        <SocialLoginIcon src={kakao} alt="K" />
-        <SocailLoginText>카카오 로그인</SocailLoginText>
-      </SocialLoginComponent> */}
+
       <SearchInfoComponent>
         <SearchInfoText>비밀번호 찾기</SearchInfoText>
         <SearchInfoBar src={bar} alt="|" />

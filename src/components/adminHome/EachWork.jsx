@@ -7,44 +7,60 @@ import clock from "assets/searchWork/Clock.svg";
 import region from "assets/searchWork/Region.svg";
 import eye from "assets/adminHome/eye.svg";
 import worker from "assets/adminHome/worker.svg";
+import { useNavigate } from "react-router-dom";
 
 // 일자리 하나 컴포넌트
-const EachWork = () => {
+const EachWork = (props) => {
+  const work = props;
+  const navigate = useNavigate();
+
   return (
-    <EachWorkComponent>
+    <EachWorkComponent
+      onClick={() => {
+        navigate(`/admin/works/${work.work.id}`);
+      }}
+    >
       <EachWorkHeader>
-        <div className="headerAlert">구인 중🚨</div>
+        {work.work.recruitmentStatus === "RECRUITING" ? (
+          <div className="headerBlueAlert">구인 중</div>
+        ) : (
+          <div className="headerRedAlert">구인 완료</div>
+        )}
       </EachWorkHeader>
       <EachWorkTotalContent>
         <EachWorkContentLeft>
           <EachWorkContentLeftImg src={testImg} alt="test" />
-          <EachWorkContentLeftPay>일급 168,000원</EachWorkContentLeftPay>
+          <EachWorkContentLeftPay>
+            {work.work.wageType === "MONTH"
+              ? "월급"
+              : work.work.wageType === "DAY"
+              ? "일급"
+              : "건당"}{" "}
+            {work.work.wage}원
+          </EachWorkContentLeftPay>
         </EachWorkContentLeft>
         <EachWorkContentRight>
-          <div className="contentTitle">세종대 R&D센터 건립 현장</div>
-          <div className="contentSector">건설 | 단순노무</div>
+          <div className="contentTitle">{work.work.title}</div>
+          <div className="contentSector">{work.work.category}</div>
           <div className="contentFlex">
             <img className="contentFlexImg" src={calendar} alt="calendar" />
-            <div className="contentFlexText">4월 19일 (금)</div>
+            <div className="contentFlexText">{work.work.startTime.substring(0, 10)}</div>
           </div>
           <div className="contentFlex">
             <img className="contentFlexImg" src={clock} alt="clock" />
-            <div className="contentFlexText">11:30 ~ 15:30</div>
+            <div className="contentFlexText">
+              {work.work.startTime.substring(11, 16)} ~ {work.work.endTime.substring(11, 16)}
+            </div>
           </div>
           <div className="contentFlex">
             <img className="contentFlexImg" src={region} alt="region" />
-            <div className="contentFlexText">서울 광진구</div>
+            <div className="contentFlexText">{work.work.address}</div>
           </div>
-
-          <div className="contentTime"></div>
-          <div className="contentRegion"></div>
         </EachWorkContentRight>
       </EachWorkTotalContent>
       <EachWorkFooter>
-        <EachWorkFooterIcon src={eye} width="20px" height="20px" />
-        <EachWorkFooterText>114</EachWorkFooterText>
         <EachWorkFooterIcon style={{ marginTop: "-9px" }} src={worker} width="18px" height="18px" />
-        <EachWorkFooterText>3</EachWorkFooterText>
+        <EachWorkFooterText>{work.work.numberOfApplicants}</EachWorkFooterText>
       </EachWorkFooter>
     </EachWorkComponent>
   );
@@ -72,9 +88,17 @@ const EachWorkHeader = styled.div`
     font-size: 13px;
     font-weight: 800;
   }
-  .headerAlert {
+  .headerRedAlert {
     font-family: "Pretendard Variable";
     color: #ff0505;
+    text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0px 0px 0px 12px;
+  }
+  .headerBlueAlert {
+    font-family: "Pretendard Variable";
+    color: #3461fd;
     text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
     font-size: 13px;
     font-weight: 600;
