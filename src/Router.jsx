@@ -34,6 +34,11 @@ import CompanyName from "pages/admin/signup/CompanyName";
 import CompanyAddress from "pages/admin/signup/CompanyAddress";
 import CompanySector from "pages/admin/signup/CompanySector";
 import AdminHome from "pages/admin/home/AdminHome";
+import NewWork from "pages/admin/work/NewWork";
+import ApplicantInquiry from "pages/admin/work/ApplicantInquiry";
+import SettlementStatus from "pages/admin/work/SettlementStatus";
+import AdminWorksDetail from "pages/admin/work/WorkDetail";
+import ApplicantProfile from "pages/admin/work/ApplicantProfile";
 // 회원가입
 
 const Router = () => {
@@ -48,7 +53,7 @@ const Router = () => {
           <Route path="/signup/terms" element={<Terms />} />
           <Route path="/signup/otherInfo" element={<OtherInfo />} />
           <Route path="/works" element={<SearchWork />} />
-          <Route path="/works/detail" element={<WorkDetail />} />
+          <Route path="/works/:postId" element={<WorkDetail />} />
           <Route path="/assignment" element={<Assignment />} />
           <Route path="/works/saved" element={<SavedWorks />} />
           <Route path="/profile" element={<Profile />} />
@@ -62,6 +67,15 @@ const Router = () => {
               <Route path="companyName" element={<CompanyName />} />
               <Route path="companyAddress" element={<CompanyAddress />} />
               <Route path="companySector" element={<CompanySector />} />
+            </Route>
+            <Route path="works">
+              <Route path="new" element={<NewWork />} />
+              <Route path=":postId">
+                <Route index path="" element={<AdminWorksDetail />} />
+                <Route path="applicants" element={<ApplicantInquiry />} />
+                <Route path="settlementStatus" element={<SettlementStatus />} />
+                <Route path="profile" element={<ApplicantProfile />} />
+              </Route>
             </Route>
           </Route>
         </Route>

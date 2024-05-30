@@ -1,46 +1,65 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import React from "react";
 import styled from "styled-components";
 import testImg from "assets/test/TestImg.png";
 import calendar from "assets/searchWork/Calendar.svg";
 import clock from "assets/searchWork/Clock.svg";
 import region from "assets/searchWork/Region.svg";
+import { useNavigate } from "react-router-dom";
 
 // 일자리 하나 컴포넌트
-const EachWork = () => {
+const EachWork = ({ work }) => {
+  const navigate = useNavigate();
+
   return (
-    <EachWorkComponent>
+    <EachWorkComponent
+      onClick={() => {
+        navigate(`/works/${work.id}`);
+      }}
+    >
       <EachWorkHeader>
-        <div className="headerTopic">현재 많은 지원자가 보는 일감</div>
-        <div className="headerAlert">곧 마감🚨</div>
+        {work.recruitmentStatus === "RECRUITING" ? (
+          <div className="headerAlert">구인중🚨</div>
+        ) : (
+          <div className="headerAlert" style={{ color: "#3461FD" }}>
+            구인 완료
+          </div>
+        )}
+        {/* <div className="headerTopic">현재 많은 지원자가 보는 일감</div> */}
+        {/* <div className="headerAlert">곧 마감🚨</div> */}
       </EachWorkHeader>
       <EachWorkTotalContent>
         <EachWorkContentLeft>
           <EachWorkContentLeftImg src={testImg} alt="test" />
-          <EachWorkContentLeftPay>일급 168,000원</EachWorkContentLeftPay>
+          <EachWorkContentLeftPay>
+            {" "}
+            {work.wageType === "MONTH" ? "월급" : work.wageType === "DAY" ? "일급" : "건당"}{" "}
+            {work.wage}원
+          </EachWorkContentLeftPay>
         </EachWorkContentLeft>
         <EachWorkContentRight>
-          <div className="contentTitle">세종대 R&D센터 건립 현장</div>
-          <div className="contentSector">건설 | 단순노무</div>
+          <div className="contentTitle">{work.title}</div>
+          <div className="contentSector">{work.category}</div>
           <div className="contentFlex">
             <img className="contentFlexImg" src={calendar} alt="calendar" />
-            <div className="contentFlexText">4월 19일 (금)</div>
+            <div className="contentFlexText">{work.startTime.substring(0, 10)}</div>
           </div>
           <div className="contentFlex">
             <img className="contentFlexImg" src={clock} alt="clock" />
-            <div className="contentFlexText">11:30 ~ 15:30</div>
+            <div className="contentFlexText">
+              {" "}
+              {work.startTime && work.startTime.substring(11, 16)} ~{" "}
+              {work.startTime && work.endTime.substring(11, 16)}
+            </div>
           </div>
           <div className="contentFlex">
             <img className="contentFlexImg" src={region} alt="region" />
-            <div className="contentFlexText">서울 광진구</div>
+            <div className="contentFlexText">{work.location}</div>
           </div>
-
-          <div className="contentTime"></div>
-          <div className="contentRegion"></div>
         </EachWorkContentRight>
       </EachWorkTotalContent>
       <EachWorkFooter>
-        <EachWorkFooterBackground>🐥 초보가능</EachWorkFooterBackground>
-        <EachWorkFooterBackground>🐥 초보가능</EachWorkFooterBackground>
         <EachWorkFooterBackground>🐥 초보가능</EachWorkFooterBackground>
       </EachWorkFooter>
     </EachWorkComponent>

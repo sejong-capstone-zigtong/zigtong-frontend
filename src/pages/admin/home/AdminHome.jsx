@@ -3,15 +3,16 @@ import styled from "styled-components";
 import group1 from "assets/adminHome/group1.svg";
 import group2 from "assets/adminHome/group2.svg";
 import group3 from "assets/adminHome/group3.svg";
-
 import { useState } from "react";
 import Home from "components/adminHome/Home";
 import Works from "components/adminHome/Works";
 import Reviews from "components/adminHome/Reviews";
+import { useNavigate } from "react-router-dom";
 
 /* eslint-disable react/react-in-jsx-scope */
 const AdminHome = () => {
   const [sector, setSector] = useState(0);
+  const navigate = useNavigate();
 
   return (
     <Container>
@@ -23,11 +24,16 @@ const AdminHome = () => {
           <CategoryName>광고</CategoryName>
         </CategoryWrapper>
         <CategoryWrapper>
-          <CategoryImg src={group1} />
+          <CategoryImg
+            onClick={() => {
+              navigate("/admin/works/new");
+            }}
+            src={group2}
+          />
           <CategoryName>게시글 작성</CategoryName>
         </CategoryWrapper>
         <CategoryWrapper>
-          <CategoryImg src={group1} />
+          <CategoryImg src={group3} />
           <CategoryName>지원자 조회</CategoryName>
         </CategoryWrapper>
       </CategoriesWrapper>

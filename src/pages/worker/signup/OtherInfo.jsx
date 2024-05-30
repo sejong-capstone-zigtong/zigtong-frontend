@@ -1,11 +1,13 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import KakaoMap from "pages/worker/signup/KakaoMap.jsx";
 import { signUpApi } from "apis/SignUpApis.jsx";
 import icon from "assets/sign/Icon.svg";
-
+import { AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { getSkillAll, getSkillCategoryApi } from "apis/ProfileApis";
 // 회원 가입 시 추가정보 받는 페이지
 const OtherInfo = () => {
   const navigate = useNavigate();
@@ -20,19 +22,36 @@ const OtherInfo = () => {
     gender: "",
     birthdate: "",
     nickname: "",
-    // certificates: "",
+    skillId: 0,
   });
 
   // 주요 직무 드롭다운
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
   const [selectedDropdown, setSelectedDropdown] = useState(null);
-  const dropdownOptions = ["옵션 1", "옵션 2", "옵션 3"]; // 드롭다운에 표시할 옵션들
+  const [dropdownOptions, setDropdownOptions] = useState([]);
+
+  const getSkills = async () => {
+    await getSkillAll().then((res) => {
+      console.log(res);
+      setDropdownOptions(res.data.data);
+    });
+  };
+
+  useEffect(() => {
+    getSkills();
+  }, []);
+
   const toggleDropdown = () => {
     setIsOpenDropdown(!isOpenDropdown);
   };
+
   const handleOptionClick = (option) => {
-    setSelectedDropdown(option);
+    setSelectedDropdown(option.name);
     setIsOpenDropdown(false);
+    setUserInfo({
+      ...userInfo,
+      skillId: option.id,
+    });
   };
 
   // 지도 맵 킬지 여부
@@ -188,7 +207,7 @@ const OtherInfo = () => {
               value={userInfo.nickname}
             />
           </ContentComponent>
-          {/* <ContentComponent
+          <ContentComponent
             style={{
               position: "relative",
               margin: "34px 0px 0px 0px",
@@ -224,6 +243,8 @@ const OtherInfo = () => {
                         zIndex: 2,
                         position: "absolute",
                         width: "100%",
+                        height: "150px",
+                        overflowY: "auto",
                         top: "100%",
                         left: "0",
                         transition: "opacity 0.2s ease, transform 0.2s ease",
@@ -238,13 +259,14 @@ const OtherInfo = () => {
                         padding: "3px 0px",
                       }}
                     >
-                      {dropdownOptions.map((option, index) => (
+                      {dropdownOptions.map((option) => (
                         <motion.div
-                          key={index}
+                          key={option.id}
                           onClick={() => handleOptionClick(option)}
                           whileHover={{ backgroundColor: "#ccc" }}
                           style={{
                             borderTop: "1px solid #f1f1f1",
+                            padding: "5px",
                             width: "100%",
                             height: "30px",
                             display: "flex",
@@ -254,7 +276,7 @@ const OtherInfo = () => {
                             cursor: "pointer",
                           }}
                         >
-                          {option}
+                          {option.name}
                         </motion.div>
                       ))}
                     </motion.div>
@@ -262,7 +284,7 @@ const OtherInfo = () => {
                 </AnimatePresence>
               </div>
             </div>
-          </ContentComponent> */}
+          </ContentComponent>
           <ContentComponent
             style={{
               position: "relative",

@@ -21,7 +21,7 @@ const BusinessNumber = () => {
     passwordCheck: "",
     companyName: "",
     address: "",
-    category: "",
+    category: "통신업",
     role: "COMPANY",
   });
 

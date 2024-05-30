@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-unused-vars */
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
@@ -8,10 +9,12 @@ import Footer from "components/common/Footer";
 import {
   getCertificateCategoryApi,
   getCertificateInfoApi,
+  getProfileImageApi,
   getUserInfoApi,
   putCertificateApi,
   putUserCareersApi,
   putUserIntroduceApi,
+  updateProfileImageApi,
 } from "apis/ProfileApis";
 import experienceIcon from "assets/profile/ExperienceIcon.svg";
 import user from "assets/profile/User.svg";
@@ -54,6 +57,8 @@ const Profile = () => {
   });
   const [certificates, setCertificates] = useState(userInfo.certificates);
   const [skills, setSkills] = useState(userInfo.skills);
+  const [profileImageUrl, setProfileImageUrl] = useState(userInfo.profileImageUrl);
+  const [profileImageFile, setProfileImageFile] = useState();
 
   // 리코일 받은 어세스토큰
   const accessToken = useRecoilValue(userAccessTokenState);
@@ -65,7 +70,7 @@ const Profile = () => {
         setUserInfo(res.data.data);
         console.log(res.data.data);
         setAge(calculateAge(res.data.data.birthdate));
-        if (res.data.data.profileImageUrl !== null) setIsProfileImg(true);
+        if (res.data.data.profileImageUrl != null) setIsProfileImg(true);
         if (res.data.data.content !== null) setIsSelfIntroduce(true);
         if (res.data.data.skills.length !== 0) setIsHasSkill(true);
         setContent(res.data.data.content);
@@ -81,22 +86,6 @@ const Profile = () => {
             }),
           );
         }
-        // setUserInfo({
-        //   ...userInfo,
-        //   skills: [
-        //     { name: "하이" },
-        //     { name: "하이dd" },
-        //     { name: "하이ㅇㄴㄹㅇㄴㄹ" },
-        //     { name: "하이ㅈㅇㄴㄹ" },
-        //     { name: "하이ㅂㅈㄷㄱ" },
-        //     { name: "하이ㅍㅈ" },
-        //     { name: "하이ㅌㅊㅍ" },
-        //     { name: "하이ㅠㅍ" },
-        //     { name: "하이" },
-        //     { name: "호이퓨" },
-        //     { name: "히히" },
-        //   ],
-        // });
       });
     } catch (err) {
       console.log(err);
@@ -265,20 +254,60 @@ const Profile = () => {
 
   useEffect(() => {
     getCertificateCategory();
+    getProfileImage();
   }, []);
+
+  const getProfileImage = useCallback(async () => {
+    try {
+      await getProfileImageApi(accessToken).then((res) => {
+        setUserInfo({
+          ...userInfo,
+          profileImageUrl: res.data.data.uploadedUrl,
+        });
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  // 이미지 파일 선택 핸들러
+  const handleImageChange = (e) => {
+    let file = e.target.files && e.target.files[0];
+    if (file) {
+      setProfileImageUrl(URL.createObjectURL(file)); // 미리보기를 위해 파일 URL 저장
+      setProfileImageFile(file);
+    }
+    updateProfileImageApi(accessToken, file).then((res) => {
+      console.log(res);
+      if (res.data.status === 200)
+        setUserInfo({
+          ...userInfo,
+          profileImageUrl: URL.createObjectURL(file),
+        });
+    });
+  };
 
   return (
     <ProfileTotalComponent>
       <ProfileHeader>프로필</ProfileHeader>
       <ProfileInfo>
         <ProfileInfoImgContainer>
-          {userInfo.profileImageUrl === null ? (
-            <ProfileInfoImg src={user} />
-          ) : (
+          {userInfo.profileImageUrl !== null && userInfo.profileImageUrl !== "" ? (
             <ProfileInfoImg src={userInfo.profileImageUrl} />
+          ) : (
+            <ProfileInfoImg src={user} />
           )}
           <EditProfileInfoWrapper>
-            <EditProfileInfoImg src={editProfile} />
+            <label htmlFor="file">
+              <EditProfileInfoImg src={editProfile} />
+            </label>
+            <input
+              type="file"
+              name="file"
+              id="file"
+              style={{ display: "none" }}
+              onChange={handleImageChange}
+            />
           </EditProfileInfoWrapper>
         </ProfileInfoImgContainer>
         <ProfileOtherInfoContainer>
