@@ -53,7 +53,7 @@ const Router = () => {
           <Route path="/signup/terms" element={<Terms />} />
           <Route path="/signup/otherInfo" element={<OtherInfo />} />
           <Route path="/works" element={<SearchWork />} />
-          <Route path="/works/detail" element={<WorkDetail />} />
+          <Route path="/works/:postId" element={<WorkDetail />} />
           <Route path="/assignment" element={<Assignment />} />
           <Route path="/works/saved" element={<SavedWorks />} />
           <Route path="/profile" element={<Profile />} />
@@ -73,10 +73,10 @@ const Router = () => {
               <Route path=":postId">
                 <Route index path="" element={<AdminWorksDetail />} />
                 <Route path="applicants" element={<ApplicantInquiry />} />
+                <Route path="settlementStatus" element={<SettlementStatus />} />
+                <Route path="profile" element={<ApplicantProfile />} />
               </Route>
             </Route>
-            <Route path="applicants/settlementStatus" element={<SettlementStatus />} />
-            <Route path="applicants/profile" element={<ApplicantProfile />} />
           </Route>
         </Route>
       </Routes>

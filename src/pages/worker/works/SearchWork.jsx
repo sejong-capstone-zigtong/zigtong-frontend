@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 // import { useNavigate } from "react-router-dom";
 import TotalWorkListComponent from "components/searchWork/TotalWorkListComponent";
@@ -8,10 +9,158 @@ import Footer from "components/common/Footer";
 import arrowDown from "assets/searchWork/ArrowDown.svg";
 import bell from "assets/searchWork/Bell.svg";
 import xIcon from "assets/searchWork/XGray.svg";
+import { getWorkListApi } from "apis/WorkApi";
+import { useRecoilValue } from "recoil";
+import { userAccessTokenState } from "recoil/atoms";
+import { useCallback } from "react";
 
 // 일자리 메인페이지
 const SearchWork = () => {
   //   const navigate = useNavigate();
+  const accessToken = useRecoilValue(userAccessTokenState);
+  const [category, setCategory] = useState("");
+  const [page, setPage] = useState(0);
+  const size = 10;
+
+  const [workList, setWorkList] = useState([]);
+
+  const getWorkList = useCallback(async () => {
+    try {
+      // setWorkList([
+      //   {
+      //     id: 0,
+      //     title: "제목0",
+      //     wageType: "CASE",
+      //     wage: 10000,
+      //     recruitmentStatus: "RECRUITING",
+      //     startTime: "2024-05-30T01:27:37.018Z",
+      //     endTime: "2024-05-30T11:30:37.018Z",
+      //     category: "업종0",
+      //     location: "서울특별시 광진구 화양동 105번지",
+      //   },
+      //   {
+      //     id: 1,
+      //     title: "제목1",
+      //     wageType: "MONTH",
+      //     wage: 2000000,
+      //     recruitmentStatus: "DONE",
+      //     startTime: "2024-06-30T01:27:37.018Z",
+      //     endTime: "2024-06-30T11:30:37.018Z",
+      //     category: "업종1",
+      //     location: "서울특별시 광진구 화양동 105번지",
+      //   },
+      //   {
+      //     id: 2,
+      //     title: "제목2",
+      //     wageType: "DAY",
+      //     wage: 100000,
+      //     recruitmentStatus: "RECRUITING",
+      //     startTime: "2024-06-30T11:27:37.018Z",
+      //     endTime: "2024-06-30T21:30:37.018Z",
+      //     category: "업종2",
+      //     location: "주소주소주소주소주소",
+      //   },
+      //   {
+      //     id: 3,
+      //     title: "제목3",
+      //     wageType: "CASE",
+      //     wage: 50000,
+      //     recruitmentStatus: "RECRUITING",
+      //     startTime: "2024-06-30T01:27:37.018Z",
+      //     endTime: "2024-06-30T11:30:37.018Z",
+      //     category: "업종3",
+      //     location: "서울특별시 광진구 화양동 105번지",
+      //   },
+      //   {
+      //     id: 4,
+      //     title: "제목3",
+      //     wageType: "CASE",
+      //     wage: 50000,
+      //     recruitmentStatus: "RECRUITING",
+      //     startTime: "2024-06-30T01:27:37.018Z",
+      //     endTime: "2024-06-30T11:30:37.018Z",
+      //     category: "업종3",
+      //     location: "서울특별시 광진구 화양동 105번지",
+      //   },
+      //   {
+      //     id: 5,
+      //     title: "제목3",
+      //     wageType: "CASE",
+      //     wage: 50000,
+      //     recruitmentStatus: "RECRUITING",
+      //     startTime: "2024-06-30T01:27:37.018Z",
+      //     endTime: "2024-06-30T11:30:37.018Z",
+      //     category: "업종3",
+      //     location: "서울특별시 광진구 화양동 105번지",
+      //   },
+      //   {
+      //     id: 6,
+      //     title: "제목3",
+      //     wageType: "CASE",
+      //     wage: 50000,
+      //     recruitmentStatus: "RECRUITING",
+      //     startTime: "2024-06-30T01:27:37.018Z",
+      //     endTime: "2024-06-30T11:30:37.018Z",
+      //     category: "업종3",
+      //     location: "서울특별시 광진구 화양동 105번지",
+      //   },
+      //   {
+      //     id: 7,
+      //     title: "제목3",
+      //     wageType: "CASE",
+      //     wage: 50000,
+      //     recruitmentStatus: "RECRUITING",
+      //     startTime: "2024-06-30T01:27:37.018Z",
+      //     endTime: "2024-06-30T11:30:37.018Z",
+      //     category: "업종3",
+      //     location: "서울특별시 광진구 화양동 105번지",
+      //   },
+      //   {
+      //     id: 8,
+      //     title: "제목3",
+      //     wageType: "CASE",
+      //     wage: 50000,
+      //     recruitmentStatus: "RECRUITING",
+      //     startTime: "2024-06-30T01:27:37.018Z",
+      //     endTime: "2024-06-30T11:30:37.018Z",
+      //     category: "업종3",
+      //     location: "서울특별시 광진구 화양동 105번지",
+      //   },
+      //   {
+      //     id: 9,
+      //     title: "제목3",
+      //     wageType: "CASE",
+      //     wage: 50000,
+      //     recruitmentStatus: "RECRUITING",
+      //     startTime: "2024-06-30T01:27:37.018Z",
+      //     endTime: "2024-06-30T11:30:37.018Z",
+      //     category: "업종3",
+      //     location: "서울특별시 광진구 화양동 105번지",
+      //   },
+      //   {
+      //     id: 10,
+      //     title: "제목3",
+      //     wageType: "CASE",
+      //     wage: 50000,
+      //     recruitmentStatus: "RECRUITING",
+      //     startTime: "2024-06-30T01:27:37.018Z",
+      //     endTime: "2024-06-30T11:30:37.018Z",
+      //     category: "업종3",
+      //     location: "서울특별시 광진구 화양동 105번지",
+      //   },
+      // ]);
+      await getWorkListApi(accessToken, page, size, category).then((res) => {
+        console.log(res);
+        setWorkList(res.data.data);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    getWorkList();
+  }, [getWorkList]);
 
   return (
     <SearchWorkTotalComponent>
@@ -51,7 +200,7 @@ const SearchWork = () => {
         })}
       </FilterListComponent>
       {/* 해당 필터에 해당하는 일자리 리스트 */}
-      <TotalWorkListComponent />
+      {workList.length > 0 && <TotalWorkListComponent workList={workList} />}
       <Footer />
     </SearchWorkTotalComponent>
   );

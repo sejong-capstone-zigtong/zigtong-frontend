@@ -49,7 +49,7 @@ const WorkDetail = () => {
           <HeaderContentContentText>{postInfo.category}</HeaderContentContentText>
           <HeaderContentPencil src={pencil} />
         </HeaderContentWrapper>
-        <IconWrapper>
+        <IconWrapper onClick={() => navigate(`/admin/works/${id}/settlementStatus`)}>
           <Icon src={calculator} />
           <IconText>대금 지급 조회</IconText>
         </IconWrapper>

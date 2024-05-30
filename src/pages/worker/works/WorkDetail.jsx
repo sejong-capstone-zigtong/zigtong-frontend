@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import leftArrow from "assets/workDetail/ArrowLeft.svg";
 import heart from "assets/workDetail/Heart.svg";
@@ -18,36 +18,105 @@ import parkingGray from "assets/workDetail/ParkingGray.svg";
 import carBlack from "assets/workDetail/CarBlack.svg";
 import carGray from "assets/workDetail/CarGray.svg";
 import homeIndicator from "assets/workDetail/HomeIndicator.svg";
+import { useNavigate, useParams } from "react-router-dom";
+import { applyWorkApi, getWorkDetailApi } from "apis/WorkApi";
+import { useRecoilValue } from "recoil";
+import { userAccessTokenState } from "recoil/atoms";
+import { useEffect } from "react";
+import mapImg from "assets/adminWork/AddressDetail.png";
 
 // 일자리 상세페이지
 const WorkDetail = () => {
+  const navigate = useNavigate();
+
+  const postId = useParams().postId;
+
+  const accessToken = useRecoilValue(userAccessTokenState);
+
+  const [workInfo, setWorkInfo] = useState({
+    id: -1,
+    content: "",
+    title: "",
+    wage: 0,
+    address: "",
+    startTime: "",
+    endTime: "",
+    lunchStartTime: "",
+    lunchEndTime: "",
+    createdAt: "",
+    category: "",
+    numberOfApplicants: 0,
+    phoneNumber: "",
+    numberOfAccepted: 10,
+    recruitmentStatus: "",
+    adminId: "",
+    wageType: "",
+  });
+
+  const getWorkDetail = async () => {
+    try {
+      await getWorkDetailApi(accessToken, postId).then((res) => {
+        console.log(res);
+        setWorkInfo(res.data.data);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getWorkDetail();
+  }, []);
+
+  const applyWork = async () => {
+    try {
+      await applyWorkApi(accessToken, postId).then((res) => {
+        console.log(res);
+        if (res.data.status === 200) {
+          alert("지원 완료");
+        }
+      });
+    } catch (err) {
+      if (err.response.data.data.errorClassName === "ALREADY_APPLIED")
+        alert("이미 지원한 공고입니다.");
+    }
+  };
+
   return (
     <WorkTotalComponent>
       <Header>
-        <HeaderArrow src={leftArrow} alt="<" />
+        <HeaderArrow onClick={() => navigate(-1)} src={leftArrow} alt="<" />
         <HeaderHeart src={heart} alt="heart" />
       </Header>
       <BackgroundImg src={testImg} alt="test" />
       <WorkContent>
         <div className="contentView">조희 330</div>
-        <div className="contentTitle">성수 행복함바식당</div>
-        <div className="contentSector">주방 | 외식 조리</div>
+        <div className="contentTitle">{workInfo.title}</div>
+        <div className="contentSector">{workInfo.category}</div>
         <div className="contentTimeBox">
           <img className="calendarIcon" src={calendar} alt="calendar" />
-          <div className="calendarText">4월 19일 (금)</div>
+          <div className="calendarText">{workInfo.startTime.substring(0, 10)}</div>
           <div className="longBar"></div>
           <img className="clockIcon" src={clock} alt="clock" />
-          <div className="clockText">11:30 ~ 15:30</div>
+          <div className="clockText">
+            {workInfo.startTime && workInfo.startTime.substring(11, 16)} ~{" "}
+            {workInfo.startTime && workInfo.endTime.substring(11, 16)}
+          </div>
         </div>
         <ContentConditionComponent>
-          <ContentCondition>🐥초보가능</ContentCondition>
-          <ContentCondition>🐥초보가능</ContentCondition>
           <ContentCondition>🐥초보가능</ContentCondition>
         </ContentConditionComponent>
       </WorkContent>
       <WorkPayHeader>일용근로자신고</WorkPayHeader>
-      <WorkTotalPay>총 급여 84,000원</WorkTotalPay>
-      <WorkHourPay>시급 14,000원</WorkHourPay>
+      <WorkHourPay>
+        {" "}
+        {workInfo.wageType === "MONTH"
+          ? "월급"
+          : workInfo.wageType === "DAY"
+          ? "일급"
+          : "건당"}{" "}
+        {workInfo.wage}원
+      </WorkHourPay>
       <WorkTimeBar />
       <WorkTimeBarUnderComponent>
         <WorkTimeBarUnderImg src={graph} alt="graph" />
@@ -60,7 +129,7 @@ const WorkDetail = () => {
       </WorkTimeBarUnderComponent>
       <WorkMapComponent>
         <WorkMapHeader>근무지 위치</WorkMapHeader>
-        <WorkMapViewComponent>지도 api(추후 추가)</WorkMapViewComponent>
+        <WorkMapViewComponent src={mapImg} />
       </WorkMapComponent>
       <MainWorkComponent>
         <MainWorkHeader>주요 업무</MainWorkHeader>
@@ -114,34 +183,34 @@ const WorkDetail = () => {
       <WorkRegionComponent>
         <WorkRegionHeader>근무지 위치</WorkRegionHeader>
         <WorkRegionEachContainer>
-          <WorkRegionEachIcon src={clockGray} alt="clock" />
-          <WorkRegionTextGray>조기 퇴근 가능성</WorkRegionTextGray>
+          <WorkRegionEachIcon src={clockBlack} alt="clock" />
+          <WorkRegionTextGray style={{ color: "black" }}>조기 퇴근 가능성</WorkRegionTextGray>
           <WorkRegionEachIcon src={clockGray} alt="clock" />
           <WorkRegionTextGray>조기 퇴근 가능성 없음</WorkRegionTextGray>
         </WorkRegionEachContainer>
         <WorkRegionEachContainer>
-          <WorkRegionEachIcon src={forkGray} alt="clock" />
-          <WorkRegionTextGray>식사 제공</WorkRegionTextGray>
+          <WorkRegionEachIcon src={forkBlack} alt="clock" />
+          <WorkRegionTextGray style={{ color: "black" }}>식사 제공</WorkRegionTextGray>
           <WorkRegionEachIcon src={forkGray} alt="clock" />
           <WorkRegionTextGray>식사 제공 없음</WorkRegionTextGray>
         </WorkRegionEachContainer>
         <WorkRegionEachContainer>
           <WorkRegionEachIcon src={shirtGray} alt="clock" />
           <WorkRegionTextGray>용모/복장 제한</WorkRegionTextGray>
-          <WorkRegionEachIcon src={shirtGray} alt="clock" />
-          <WorkRegionTextGray>용모/복장 제한 없음</WorkRegionTextGray>
+          <WorkRegionEachIcon src={shirtBlack} alt="clock" />
+          <WorkRegionTextGray style={{ color: "black" }}>용모/복장 제한 없음</WorkRegionTextGray>
         </WorkRegionEachContainer>
         <WorkRegionEachContainer>
           <WorkRegionEachIcon src={parkingGray} alt="clock" />
           <WorkRegionTextGray>무료 주차 있음</WorkRegionTextGray>
-          <WorkRegionEachIcon src={parkingGray} alt="clock" />
-          <WorkRegionTextGray>무료 주차 없음</WorkRegionTextGray>
+          <WorkRegionEachIcon src={parkingBlack} alt="clock" />
+          <WorkRegionTextGray style={{ color: "black" }}>무료 주차 없음</WorkRegionTextGray>
         </WorkRegionEachContainer>
         <WorkRegionEachContainer>
           <WorkRegionEachIcon src={carGray} alt="clock" />
           <WorkRegionTextGray>픽업 제공 있음</WorkRegionTextGray>
-          <WorkRegionEachIcon src={carGray} alt="clock" />
-          <WorkRegionTextGray>픽업 제공 없음</WorkRegionTextGray>
+          <WorkRegionEachIcon src={carBlack} alt="clock" />
+          <WorkRegionTextGray style={{ color: "black" }}>픽업 제공 없음</WorkRegionTextGray>
         </WorkRegionEachContainer>
       </WorkRegionComponent>
       <WorkCommentComponent>
@@ -154,7 +223,7 @@ const WorkDetail = () => {
           <br /> (예) 직통/주방/경력 6개월/여자
         </WorkCommentContent>
       </WorkCommentComponent>
-      <WorkApplyBtn>지원하기</WorkApplyBtn>
+      <WorkApplyBtn onClick={applyWork}>지원하기</WorkApplyBtn>
       <WorkDetailFooter src={homeIndicator} alt="home" />
     </WorkTotalComponent>
   );
@@ -309,7 +378,7 @@ const WorkHourPay = styled.div`
   font-family: "Pretendard Variable";
   color: #000;
   align-self: flex-start;
-  margin: 3px 0px 0px 25px;
+  margin: 10px 0px 0px 25px;
   font-size: 13px;
   font-weight: 700;
 `;
@@ -353,7 +422,7 @@ const WorkMapHeader = styled.div`
   margin: 18px 0px 0px 25px;
 `;
 
-const WorkMapViewComponent = styled.div`
+const WorkMapViewComponent = styled.img`
   width: 347px;
   height: 149px;
   border-radius: 2px;
@@ -488,7 +557,7 @@ const WorkNeedsProductEachAns = styled.div`
   align-items: center;
   border-radius: 5px;
   background-color: #006ffd;
-  margin: 0px 0px 0px 135px;
+  margin: 0px 0px 0px 122px;
   color: #fff;
   font-size: 11px;
   font-weight: 700;
@@ -526,7 +595,7 @@ const WorkNeedsAbilityEachAns = styled.div`
   color: #000;
   text-align: center;
   font-size: 11px;
-  margin: 0px 0px 0px 56.5px;
+  margin: 0px 0px 0px 117.5px;
 `;
 
 const WorkRegionComponent = styled.div`
@@ -534,7 +603,7 @@ const WorkRegionComponent = styled.div`
   flex-direction: column;
   width: 390px;
   border-top: 6px solid rgba(217, 217, 217, 0.6);
-  height: 394px;
+  height: 324px;
 `;
 
 const WorkRegionHeader = styled.div`
@@ -606,6 +675,7 @@ const WorkApplyBtn = styled.button`
   color: #fff;
   font-size: 20px;
   font-weight: 600;
+  cursor: pointer;
 `;
 
 const WorkDetailFooter = styled.img`

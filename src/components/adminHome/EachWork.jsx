@@ -22,9 +22,9 @@ const EachWork = (props) => {
     >
       <EachWorkHeader>
         {work.work.recruitmentStatus === "RECRUITING" ? (
-          <div className="headerBlueAlert">구인 중</div>
+          <div className="headerRedAlert">구인 중🚨</div>
         ) : (
-          <div className="headerRedAlert">구인 완료</div>
+          <div className="headerBlueAlert">구인 완료</div>
         )}
       </EachWorkHeader>
       <EachWorkTotalContent>

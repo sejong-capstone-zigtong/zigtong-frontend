@@ -6,8 +6,38 @@ import calendarImg from "assets/adminWork/CalendarGray.svg";
 import flagImg from "assets/adminWork/FlagGray.svg";
 import caseImg from "assets/adminWork/CaseGray.svg";
 import rightArrow from "assets/adminWork/RightArrow.svg";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { adminInfoState } from "recoil/atoms";
+import { useEffect, useState } from "react";
+import { getUserInfoApi } from "../../../apis/ProfileApis";
 
 const ApplicantProfile = () => {
+  const navigate = useNavigate();
+  const id = useParams().postId;
+  const [adminInfo, setAdminInfo] = useRecoilState(adminInfoState);
+
+  const location = useLocation();
+  const workerId = location.state.workerId;
+
+  const [userInfo, setUserInfo] = useState({});
+
+  const calculateAge = (birthDate) => {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDifference = today.getMonth() - birth.getMonth();
+    const dayDifference = today.getDate() - birth.getDate();
+
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+      age--;
+    }
+
+    return age;
+  };
+
+  useEffect(() => {}, []);
+
   return (
     <Container>
       <ProfileImg src={profileImg} />

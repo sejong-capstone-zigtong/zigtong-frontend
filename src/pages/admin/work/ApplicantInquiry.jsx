@@ -1,39 +1,125 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/react-in-jsx-scope */
 import styled from "styled-components";
 import applicantTestImage from "assets/adminWork/applicantTest.svg";
+import { useNavigate, useParams } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { adminInfoState } from "recoil/atoms";
+import { useEffect, useState } from "react";
+import { GetApplicantsApi } from "apis/AdminApis";
 
 const ApplicantInquiry = () => {
+  const navigate = useNavigate();
+  const id = useParams().postId;
+  const [adminInfo, setAdminInfo] = useRecoilState(adminInfoState);
+
+  const [applicants, setApplicants] = useState([]);
+
+  const calculateAge = (birthDate) => {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDifference = today.getMonth() - birth.getMonth();
+    const dayDifference = today.getDate() - birth.getDate();
+
+    if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
+      age--;
+    }
+
+    return age;
+  };
+
+  const getApplicants = async () => {
+    try {
+      await GetApplicantsApi(adminInfo.accessToken, id).then((res) => {
+        setApplicants(res.data);
+        console.log(res.data);
+        // setApplicants([
+        //   {
+        //     id: 0,
+        //     applicationStatus: "DEFAULT",
+        //     workerDto: {
+        //       id: "id1",
+        //       name: "name1",
+        //       birthdate: "1998-05-21",
+        //       nickname: "nickname1",
+        //       gender: "MALE",
+        //       uploadRul: "string1",
+        //     },
+        //   },
+        //   {
+        //     id: 1,
+        //     applicationStatus: "DEFAULT",
+        //     workerDto: {
+        //       id: "id2",
+        //       name: "name2",
+        //       birthdate: "1997-05-22",
+        //       nickname: "nickname2",
+        //       gender: "FEMALE",
+        //       uploadRul: "string2",
+        //     },
+        //   },
+        //   {
+        //     id: 2,
+        //     applicationStatus: "DEFAULT",
+        //     workerDto: {
+        //       id: "id3",
+        //       name: "name3",
+        //       birthdate: "1977-05-23",
+        //       nickname: "nickname3",
+        //       gender: "MALE",
+        //       uploadRul: "string3",
+        //     },
+        //   },
+        // ]);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getApplicants();
+  }, []);
+
   return (
     <Container>
       <Header>전체 지원자 조회</Header>
-      <EachApplicantWrapper>
-        <EachApplicantImage src={applicantTestImage} />
-        <EachApplicantInfoWrapper>
-          <EachApplicantInfoText>열정맨</EachApplicantInfoText>
-          <EachApplicantInfoSecondLine>
-            <EachApplicantInfoText>김용흥</EachApplicantInfoText>
-            <EachApplicantInfoText style={{ margin: "0px 5px" }}> / </EachApplicantInfoText>
-            <EachApplicantInfoText> 45세 </EachApplicantInfoText>
-            <EachApplicantInfoText style={{ margin: "0px 5px" }}> / </EachApplicantInfoText>
-            <EachApplicantInfoText> 남성 </EachApplicantInfoText>
-          </EachApplicantInfoSecondLine>
-        </EachApplicantInfoWrapper>
-        <EachApplicantInfoBtn>상세</EachApplicantInfoBtn>
-      </EachApplicantWrapper>
-      <EachApplicantWrapper>
-        <EachApplicantImage src={applicantTestImage} />
-        <EachApplicantInfoWrapper>
-          <EachApplicantInfoText>열정맨</EachApplicantInfoText>
-          <EachApplicantInfoSecondLine>
-            <EachApplicantInfoText>김용흥</EachApplicantInfoText>
-            <EachApplicantInfoText style={{ margin: "0px 5px" }}> / </EachApplicantInfoText>
-            <EachApplicantInfoText> 45세 </EachApplicantInfoText>
-            <EachApplicantInfoText style={{ margin: "0px 5px" }}> / </EachApplicantInfoText>
-            <EachApplicantInfoText> 남성 </EachApplicantInfoText>
-          </EachApplicantInfoSecondLine>
-        </EachApplicantInfoWrapper>
-        <EachApplicantInfoBtn>상세</EachApplicantInfoBtn>
-      </EachApplicantWrapper>
+      {applicants.length > 0 &&
+        applicants.map((user) => {
+          return (
+            <EachApplicantWrapper key={user.id}>
+              <EachApplicantImage src={applicantTestImage} />
+              <EachApplicantInfoWrapper>
+                <EachApplicantInfoText>{user.workerDto.nickname}</EachApplicantInfoText>
+                <EachApplicantInfoSecondLine>
+                  <EachApplicantInfoText>{user.workerDto.name}</EachApplicantInfoText>
+                  <EachApplicantInfoText style={{ margin: "0px 5px" }}> / </EachApplicantInfoText>
+                  <EachApplicantInfoText>
+                    {" "}
+                    만 {calculateAge(user.workerDto.birthdate)}세{" "}
+                  </EachApplicantInfoText>
+                  <EachApplicantInfoText style={{ margin: "0px 5px" }}> / </EachApplicantInfoText>
+                  <EachApplicantInfoText>
+                    {" "}
+                    {user.workerDto.gender === "MALE" ? "남성" : "여성"}{" "}
+                  </EachApplicantInfoText>
+                </EachApplicantInfoSecondLine>
+              </EachApplicantInfoWrapper>
+              <EachApplicantInfoBtn
+                onClick={() => {
+                  navigate(`/admin/works/${id}/profile`, {
+                    state: {
+                      workerId: user.id,
+                    },
+                  });
+                }}
+              >
+                상세
+              </EachApplicantInfoBtn>
+            </EachApplicantWrapper>
+          );
+        })}
     </Container>
   );
 };
@@ -118,5 +204,5 @@ const EachApplicantInfoBtn = styled.button`
   font-weight: 500;
   line-height: 20px; /* 125% */
   border: none;
-  margin: 0px 0px 0px 30px;
+  margin: 0px 0px 0px 25px;
 `;

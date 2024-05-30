@@ -1,14 +1,15 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import styled from "styled-components";
 import EachWork from "components/searchWork/EachWork";
 
 // 전체 일자리 리스트 컴포넌트
-const TotalWorkListComponent = () => {
+const TotalWorkListComponent = ({ workList }) => {
   return (
     <WorkListComponent>
-      <EachWork />
-      <EachWork />
-      <EachWork />
+      {workList.map((work) => {
+        return <EachWork work={work} key={work.id} />;
+      })}
     </WorkListComponent>
   );
 };
