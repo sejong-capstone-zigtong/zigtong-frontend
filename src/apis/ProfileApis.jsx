@@ -101,3 +101,15 @@ export const getSkillAll = () => {
 export const getSkill = (category) => {
   return axios.get(`${url}/api/client/v1/skill?category=${category}`);
 };
+
+export const modiftSkillApi = (accessToken, skillIds) => {
+  return axios.put(
+    `${url}/api/client/v1/resume/skill/${skillIds}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+};

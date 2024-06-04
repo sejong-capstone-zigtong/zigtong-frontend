@@ -1,19 +1,62 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Footer from "components/common/Footer";
 import AssignmentList from "components/assignment/AssignmentList";
+import { getWorkStatusApi } from "apis/WorkApi";
+import { useRecoilValue } from "recoil";
+import { userAccessTokenState, userInfoState } from "recoil/atoms";
 
 // 배정내역 페이지
 const Assignment = () => {
+  const userAccessToken = useRecoilValue(userAccessTokenState);
+
+  const [status, setStatus] = useState("PENDING");
+
+  const [assignments, setAssignments] = useState([]);
+
+  const getWorkStatus = useCallback(async () => {
+    try {
+      await getWorkStatusApi(userAccessToken, status).then((res) => {
+        console.log(res);
+        setAssignments(res.data.data);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, [userAccessToken, status]);
+
+  useEffect(() => {
+    getWorkStatus();
+  }, [getWorkStatus]);
+
   return (
     <AssignmentTotalComponent>
       <AssignmentHeader>배정 내역</AssignmentHeader>
       <AssignmentTypeComponent>
-        <AssignmentType>출근신청</AssignmentType>
-        <AssignmentType>배정완료</AssignmentType>
-        <AssignmentType>미배정</AssignmentType>
+        {status === "PENDING" ? (
+          <SelectedAssignmentType onClick={() => setStatus("PENDING")}>
+            출근신청
+          </SelectedAssignmentType>
+        ) : (
+          <AssignmentType onClick={() => setStatus("PENDING")}>출근신청</AssignmentType>
+        )}
+        {status === "ACCEPTED" ? (
+          <SelectedAssignmentType onClick={() => setStatus("ACCEPTED")}>
+            배정완료
+          </SelectedAssignmentType>
+        ) : (
+          <AssignmentType onClick={() => setStatus("ACCEPTED")}>배정완료</AssignmentType>
+        )}
+        {status === "REJECTED" ? (
+          <SelectedAssignmentType onClick={() => setStatus("REJECTED")}>
+            미배정
+          </SelectedAssignmentType>
+        ) : (
+          <AssignmentType onClick={() => setStatus("REJECTED")}>미배정</AssignmentType>
+        )}
       </AssignmentTypeComponent>
-      <AssignmentList />
+      {assignments.length > 0 && <AssignmentList assignments={assignments} status={status} />}
       <Footer />
     </AssignmentTotalComponent>
   );
@@ -60,4 +103,9 @@ const AssignmentType = styled.button`
   font-size: 10px;
   font-weight: 400;
   margin: 0px 5px;
+`;
+
+const SelectedAssignmentType = styled(AssignmentType)`
+  color: #fff;
+  background-color: #000;
 `;

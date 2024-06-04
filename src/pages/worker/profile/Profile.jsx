@@ -10,7 +10,9 @@ import {
   getCertificateCategoryApi,
   getCertificateInfoApi,
   getProfileImageApi,
+  getSkillAll,
   getUserInfoApi,
+  modiftSkillApi,
   putCertificateApi,
   putUserCareersApi,
   putUserIntroduceApi,
@@ -70,8 +72,8 @@ const Profile = () => {
         setUserInfo(res.data.data);
         console.log(res.data.data);
         setAge(calculateAge(res.data.data.birthdate));
-        if (res.data.data.profileImageUrl != null) setIsProfileImg(true);
-        if (res.data.data.content !== null) setIsSelfIntroduce(true);
+        if (res.data.data.profileImageUrl != "") setIsProfileImg(true);
+        if (res.data.data.content !== "") setIsSelfIntroduce(true);
         if (res.data.data.skills.length !== 0) setIsHasSkill(true);
         setContent(res.data.data.content);
         setCertificates(res.data.data.certificates);
@@ -128,6 +130,7 @@ const Profile = () => {
   const onChangeIntroduce = (e) => {
     setContent(e.target.value);
   };
+
   // 한줄 자기소개 수정
   const putUserIntroduce = async () => {
     try {
@@ -138,6 +141,7 @@ const Profile = () => {
             content: content,
           });
           setIsOpenIntroduceModal(false);
+          window.location.reload();
         }
       });
     } catch (err) {
@@ -279,13 +283,76 @@ const Profile = () => {
     }
     updateProfileImageApi(accessToken, file).then((res) => {
       console.log(res);
-      if (res.data.status === 200)
+      if (res.data.status === 200) {
         setUserInfo({
           ...userInfo,
           profileImageUrl: URL.createObjectURL(file),
         });
+        window.location.reload();
+      }
     });
   };
+
+  // 선택한 스킬 정보 저장
+  const [isOpenSkillsModal, setIsOpenSkillsModal] = useState(false);
+  const [skillNameList, setSkillNameList] = useState({});
+  const [skillIds, setSkillIds] = useState([]);
+  const [skillNames, setSkillNames] = useState([]);
+
+  const toggleSkillId = (item) => {
+    setSkillIds((currentIds) => {
+      // 배열에 ID가 이미 있는지 확인
+      if (currentIds.includes(item.id)) {
+        // ID가 있으면 제거
+        return currentIds.filter((certificateId) => certificateId !== item.id);
+      } else {
+        // ID가 없으면 추가
+        return [...currentIds, item.id];
+      }
+    });
+    setSkillNames((currentNames) => {
+      // 배열에 ID가 이미 있는지 확인
+      if (currentNames.includes(item.name)) {
+        // ID가 있으면 제거
+        return currentNames.filter((certificateName) => certificateName !== item.name);
+      } else {
+        // ID가 없으면 추가
+        return [...currentNames, item.name];
+      }
+    });
+  };
+  const getSkills = async () => {
+    try {
+      await getSkillAll().then((res) => {
+        console.log(res);
+        setSkillNameList(res.data.data);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // 자격증 선택 시
+  const onClickSkillItem = (item) => {
+    toggleSkillId(item);
+  };
+
+  // 자격증 수정하기 버튼 누를시
+  const skillModify = async () => {
+    try {
+      await modiftSkillApi(accessToken, skillIds).then((res) => {
+        console.log(res);
+        setIsOpenSkillsModal(false);
+        window.location.reload();
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getSkills();
+  }, []);
 
   return (
     <ProfileTotalComponent>
@@ -414,7 +481,13 @@ const Profile = () => {
         <ProfileEachHeaderContainer>
           <ProfileEachHeaderTopic>스킬</ProfileEachHeaderTopic>
           <ProfileEachHeaderPriority>적합한 스킬 보유자 우선배정</ProfileEachHeaderPriority>
-          <PencilIcon src={pencil} alt="pencil" />
+          <PencilIcon
+            onClick={() => {
+              setIsOpenSkillsModal(!isOpenSkillsModal);
+            }}
+            src={pencil}
+            alt="pencil"
+          />
         </ProfileEachHeaderContainer>
         {userInfo.skills && userInfo.skills.length === 0 ? (
           <ProfileEachContentPlaceholder>등록된 스킬이 없습니다</ProfileEachContentPlaceholder>
@@ -689,6 +762,57 @@ const Profile = () => {
               </ProfileEachContentPlaceholder>
 
               <ModalBtn onClick={certificateModify}>수정</ModalBtn>
+            </SearchModalContent>
+          </SearchModalBox>
+        </AnimatePresence>
+      )}
+      {/* 자격증 선택 모달창 */}
+      {isOpenSkillsModal && (
+        <AnimatePresence>
+          {/* 뒷배경을 클릭하면 모달을 나갈 수 있게 해야하므로 뒷 배경 onClick에 state함수를 넣는다. */}
+          <SearchModalBox
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOpenSkillsModal(false)}
+          >
+            <SearchModalContent
+              width="320px"
+              height="380px"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+            >
+              <ModalHeader>스킬 수정</ModalHeader>
+              <ProfileEachContentPlaceholder style={{ height: "220px", overflowY: "auto" }}>
+                {skillNameList &&
+                  skillNameList.map((item, index) => {
+                    if (skillNames.includes(item.name)) {
+                      return (
+                        <EachContentAnswer
+                          style={{ cursor: "pointer", backgroundColor: "#006FFD", color: "white" }}
+                          key={index}
+                          onClick={() => onClickSkillItem(item)}
+                        >
+                          {item.name}
+                        </EachContentAnswer>
+                      );
+                    } else {
+                      return (
+                        <EachContentAnswer
+                          onClick={() => onClickSkillItem(item)}
+                          style={{ cursor: "pointer" }}
+                          key={index}
+                        >
+                          {item.name}
+                        </EachContentAnswer>
+                      );
+                    }
+                  })}
+              </ProfileEachContentPlaceholder>
+
+              <ModalBtn onClick={skillModify}>수정</ModalBtn>
             </SearchModalContent>
           </SearchModalBox>
         </AnimatePresence>

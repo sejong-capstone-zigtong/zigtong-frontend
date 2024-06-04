@@ -55,3 +55,25 @@ export const GetWorkersApi = (accessToken, postId) => {
     },
   });
 };
+
+export const GetWorkerInfoApi = (accessToken, workerId) => {
+  return axios.get(`${url}/api/v1/admins/workers/${workerId}/resumes`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+
+export const postWorkerStatusApi = (accessToken, postId, workerApplicationId, status) => {
+  return axios.post(
+    `${url}/api/v1/admins/posts/${postId}/worker-application-status/${workerApplicationId}`,
+    {
+      applicationStatus: status,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+};

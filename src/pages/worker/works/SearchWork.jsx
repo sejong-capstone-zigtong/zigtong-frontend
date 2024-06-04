@@ -13,6 +13,10 @@ import { getWorkListApi } from "apis/WorkApi";
 import { useRecoilValue } from "recoil";
 import { userAccessTokenState } from "recoil/atoms";
 import { useCallback } from "react";
+import { getSkillCategoryApi, getUserInfoApi } from "apis/ProfileApis";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper-bundle.css";
+import "swiper/css";
 
 // 일자리 메인페이지
 const SearchWork = () => {
@@ -156,35 +160,70 @@ const SearchWork = () => {
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [category]);
 
   useEffect(() => {
     getWorkList();
   }, [getWorkList]);
 
+  const [categories, setCategories] = useState([]);
+
+  const getSkillCategories = async () => {
+    await getSkillCategoryApi().then((res) => {
+      console.log(res);
+      setCategories(res.data.data);
+    });
+  };
+
+  useEffect(() => {
+    getSkillCategories();
+  }, []);
+
   return (
     <SearchWorkTotalComponent>
       <HeaderComponent>
-        <RegionText>서울</RegionText>
+        <RegionText>전체 지역</RegionText>
         <RegionDropDownArrow src={arrowDown} alt="v" />
         <BellAlert src={bell} alt="bell" />
       </HeaderComponent>
-      <RegionsComponent>
-        <EachRegion>
-          <EachRegionText>서울 광진구</EachRegionText>
-          <XIcon src={xIcon} alt="X" />
-        </EachRegion>
-        <EachRegion>
-          <EachRegionText>서울 광진구</EachRegionText>
-          <XIcon src={xIcon} alt="X" />
-        </EachRegion>
-      </RegionsComponent>
-      {/* 일자리 필터 */}
-      <WorkListComponent>
-        {WorkList.map((item) => {
-          return <WorkListText key={item.value}>{item.label}</WorkListText>;
-        })}
-      </WorkListComponent>
+
+      <Swiper
+        style={{ width: "95%", margin: "15px 0px 0px 0px" }}
+        slidesPerView={4.4}
+        onSwiper={(swiper) => console.log(swiper)}
+        onSlideChange={() => console.log("slide change")}
+      >
+        {/* 일자리 필터 */}
+        <WorkListComponent>
+          {categories.length > 0 &&
+            categories.map((item) => {
+              return (
+                <SwiperSlide key={item.categoryId}>
+                  {category === item.category ? (
+                    <WorkListText
+                      style={{ color: "black" }}
+                      onClick={() => {
+                        setCategory(item.category);
+                      }}
+                      key={item.category}
+                    >
+                      {item.category}
+                    </WorkListText>
+                  ) : (
+                    <WorkListText
+                      onClick={() => {
+                        setCategory(item.category);
+                      }}
+                      key={item.category}
+                    >
+                      {item.category}
+                    </WorkListText>
+                  )}
+                </SwiperSlide>
+              );
+            })}
+        </WorkListComponent>
+      </Swiper>
       {/* 필터 리스트 */}
       <FilterListComponent>
         {FilterList.map((item) => {
@@ -227,7 +266,7 @@ const HeaderComponent = styled.div`
 
 const RegionText = styled.div`
   font-family: "Pretendard Variable";
-  width: 35px;
+  width: 70px;
   color: #1e1e1e;
   font-size: 18px;
   font-weight: 800;
@@ -285,18 +324,20 @@ const WorkListComponent = styled.div`
 
 const WorkListText = styled.div`
   font-family: "Pretendard Variable";
-  height: 26px;
+  /* height: 26px; */
+
   color: #888;
   font-size: 15px;
   font-weight: 600;
   margin: 0px 7.5px;
+  cursor: pointer;
 `;
 
 const FilterListComponent = styled.div`
   display: flex;
   align-self: flex-start;
   align-items: center;
-  margin: 26px 0px 0px 2px;
+  margin: 6px 0px 0px 2px;
 `;
 
 const FilterListText = styled.button`
