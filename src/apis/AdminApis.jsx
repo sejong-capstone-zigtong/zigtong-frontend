@@ -77,3 +77,11 @@ export const postWorkerStatusApi = (accessToken, postId, workerApplicationId, st
     },
   );
 };
+
+export const getAdminSkillCategoryApi = (accessToken) => {
+  return axios.get(`${url}/api/v1/admins/skills/categories`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
