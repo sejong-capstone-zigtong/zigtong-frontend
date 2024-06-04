@@ -7,7 +7,7 @@ import { signUpApi } from "apis/SignUpApis.jsx";
 import icon from "assets/sign/Icon.svg";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
-import { getSkillAll, getSkillCategoryApi } from "apis/ProfileApis";
+import { getSkill, getSkillAll, getSkillCategoryApi } from "apis/ProfileApis";
 // 회원 가입 시 추가정보 받는 페이지
 const OtherInfo = () => {
   const navigate = useNavigate();
@@ -29,25 +29,48 @@ const OtherInfo = () => {
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
   const [selectedDropdown, setSelectedDropdown] = useState(null);
   const [dropdownOptions, setDropdownOptions] = useState([]);
+  // 주요 직무 드롭다운
+  const [isOpenDropdownSkill, setIsOpenDropdownSkill] = useState(false);
+  const [selectedDropdownSkill, setSelectedDropdownSkill] = useState(null);
+  const [dropdownOptionsSkill, setDropdownOptionsSkill] = useState([]);
 
-  const getSkills = async () => {
-    await getSkillAll().then((res) => {
+  const getSkillCategories = async () => {
+    await getSkillCategoryApi().then((res) => {
       console.log(res);
       setDropdownOptions(res.data.data);
     });
   };
 
   useEffect(() => {
-    getSkills();
+    getSkillCategories();
   }, []);
 
   const toggleDropdown = () => {
+    if (isOpenDropdown === false) {
+      setIsOpenDropdownSkill(false);
+    }
     setIsOpenDropdown(!isOpenDropdown);
   };
 
-  const handleOptionClick = (option) => {
-    setSelectedDropdown(option.name);
+  const toggleDropdownSkill = () => {
+    if (isOpenDropdownSkill === false) {
+      setIsOpenDropdown(false);
+    }
+    setIsOpenDropdownSkill(!isOpenDropdownSkill);
+  };
+
+  const handleOptionClick = async (option) => {
+    setSelectedDropdown(option.category);
     setIsOpenDropdown(false);
+    await getSkill(option.category).then((res) => {
+      console.log(res);
+      setDropdownOptionsSkill(res.data.data);
+    });
+  };
+
+  const handleOptionClickSkill = (option) => {
+    setSelectedDropdownSkill(option.name);
+    setIsOpenDropdownSkill(false);
     setUserInfo({
       ...userInfo,
       skillId: option.id,
@@ -148,7 +171,6 @@ const OtherInfo = () => {
             <br />
             회원님의 정보를 알려주세요.
           </Header>
-          <div>{userInfo.birthday}</div>
           <ContentComponent margin="38px 0px 0px 0px">
             <ContentLabel>이름</ContentLabel>
             <ContentInput
@@ -228,7 +250,7 @@ const OtherInfo = () => {
               }}
             >
               <DropdownInput onClick={toggleDropdown}>
-                {selectedDropdown || "선택해주세요"}
+                {selectedDropdown || "직무를 선택해주세요"}
               </DropdownInput>
               <div style={{ backgroundColor: "#f1f1f1" }}>
                 <AnimatePresence>
@@ -261,8 +283,86 @@ const OtherInfo = () => {
                     >
                       {dropdownOptions.map((option) => (
                         <motion.div
-                          key={option.id}
+                          key={option.category}
                           onClick={() => handleOptionClick(option)}
+                          whileHover={{ backgroundColor: "#ccc" }}
+                          style={{
+                            borderTop: "1px solid #f1f1f1",
+                            padding: "5px",
+                            width: "100%",
+                            height: "30px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "14px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          {option.category}
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </ContentComponent>
+          <ContentComponent
+            style={{
+              position: "relative",
+              margin: "34px 0px 0px 0px",
+              height: "auto",
+              alignItems: "flex-start",
+            }}
+          >
+            <ContentLabel
+              style={{
+                margin: "8px 0px 0px 0px",
+              }}
+            >
+              직무 스킬
+            </ContentLabel>
+            <div
+              style={{
+                position: "relative",
+              }}
+            >
+              <DropdownInput onClick={toggleDropdownSkill}>
+                {selectedDropdownSkill || "직무의 스킬을 선택해주세요"}
+              </DropdownInput>
+              <div style={{ backgroundColor: "#f1f1f1" }}>
+                <AnimatePresence>
+                  {isOpenDropdownSkill && (
+                    <motion.div
+                      className="dropdown-options"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      style={{
+                        zIndex: 2,
+                        position: "absolute",
+                        width: "100%",
+                        height: "150px",
+                        overflowY: "auto",
+                        top: "100%",
+                        left: "0",
+                        transition: "opacity 0.2s ease, transform 0.2s ease",
+                        backgroundColor: "#fff",
+                        border: "1px solid #ccc",
+                        display: "flex",
+                        flexDirection: "column",
+                        borderTop: "none",
+                        alignItems: "center",
+                        borderBottomLeftRadius: "4px",
+                        borderBottomRightRadius: "4px",
+                        padding: "3px 0px",
+                      }}
+                    >
+                      {dropdownOptionsSkill.map((option) => (
+                        <motion.div
+                          key={option.id}
+                          onClick={() => handleOptionClickSkill(option)}
                           whileHover={{ backgroundColor: "#ccc" }}
                           style={{
                             borderTop: "1px solid #f1f1f1",

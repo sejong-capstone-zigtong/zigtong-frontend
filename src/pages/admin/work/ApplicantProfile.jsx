@@ -11,6 +11,9 @@ import { useRecoilState } from "recoil";
 import { adminInfoState } from "recoil/atoms";
 import { useEffect, useState } from "react";
 import { getUserInfoApi } from "../../../apis/ProfileApis";
+import { GetWorkerInfoApi, postWorkerStatusApi } from "apis/AdminApis";
+import { useRecoilValue } from "recoil";
+import { useCallback } from "react";
 
 const ApplicantProfile = () => {
   const navigate = useNavigate();
@@ -19,7 +22,7 @@ const ApplicantProfile = () => {
 
   const location = useLocation();
   const workerId = location.state.workerId;
-
+  const workerApplicationId = location.state.workerApplicationId;
   const [userInfo, setUserInfo] = useState({});
 
   const calculateAge = (birthDate) => {
@@ -36,14 +39,55 @@ const ApplicantProfile = () => {
     return age;
   };
 
-  useEffect(() => {}, []);
+  const [workerInfo, setWorkerInfo] = useState({});
+
+  const getWorkerInfo = useCallback(async () => {
+    try {
+      await GetWorkerInfoApi(adminInfo.accessToken, workerId).then((res) => {
+        console.log(res);
+        setWorkerInfo(res.data);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, [adminInfo.accessToken, workerId]);
+
+  useEffect(() => {
+    getWorkerInfo();
+  }, [getWorkerInfo]);
+
+  const postApproveWorkerStatus = async () => {
+    try {
+      await postWorkerStatusApi(adminInfo.accessToken, id, workerApplicationId, "ACCEPT").then(
+        (res) => {
+          console.log(res);
+          alert("수락 완료");
+        },
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const postDenyWorkerStatus = async () => {
+    try {
+      await postWorkerStatusApi(adminInfo.accessToken, id, workerApplicationId, "REFUSE").then(
+        (res) => {
+          console.log(res);
+          alert("거절 완료");
+        },
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Container>
-      <ProfileImg src={profileImg} />
+      <ProfileImg src={workerInfo.uploadedUrl} />
       <MainText margin="0px 0px 0px 45px">쾌걸가이</MainText>
       <MainText fontSize="14px" fontWeight="600" margin="5px 0px 0px 45px">
-        유장렬 / 52세 / 남성
+        유장렬 / {calculateAge(workerInfo.birthdate)}세 /{" "}
+        {workerInfo.gender === "MALE" ? "남성" : "여성"}
       </MainText>
       <OtherInfoBox>
         <OtherInfoWrapper>
@@ -72,37 +116,42 @@ const ApplicantProfile = () => {
         한 줄 소개
       </MainText>
       <MainText margin="12px 50px 0px 35px" fontSize="14px" fontWeight="500">
-        어떤 일이든 최선을 다해 열심히 잘 할 자신 있습니다! 지방 출장 가능합니다.
+        {workerInfo.statement}
       </MainText>
       <MainText margin="16px 0px 0px 35px" fontSize="13px">
         보유 스킬
       </MainText>
       <SkillWrapper>
-        <Skill>용접</Skill>
-        <Skill>건축설비</Skill>
+        {workerInfo.skillDtoList &&
+          workerInfo.skillDtoList.map((skill) => {
+            return <Skill key={skill.id}>{skill.name}</Skill>;
+          })}
       </SkillWrapper>
       <MainText margin="30px 0px 0px 35px" fontSize="13px">
         주요 경력
       </MainText>
       <ExperienceBox>
-        <RowFlexDiv>
-          <RightArrowImg src={rightArrow} />
-          <MainText>
-            2000.04~ 2012.09 <br /> 세종건설 용접공
-          </MainText>
-        </RowFlexDiv>
-        <RowFlexDiv>
-          <RightArrowImg src={rightArrow} />
-          <MainText>
-            2013.03~ 2020.05
-            <br />
-            군자건축설비소 소장
-          </MainText>
-        </RowFlexDiv>
+        {workerInfo.careerDtoList &&
+          workerInfo.careerDtoList.map((career) => {
+            return (
+              <RowFlexDiv key={career.id}>
+                <RightArrowImg src={rightArrow} />
+                <MainText>
+                  {career.startDate && career.startDate.substring(0, 10)} ~{" "}
+                  {career.endDate && career.endDate.substring(0, 10)}
+                  <br /> {career.role}
+                </MainText>
+              </RowFlexDiv>
+            );
+          })}
       </ExperienceBox>
       <BtnWrapper>
-        <Btn backgroundColor="#FA2E2E">거절</Btn>
-        <Btn backgroundColor="#006FFD">수락</Btn>
+        <Btn backgroundColor="#FA2E2E" onClick={postDenyWorkerStatus}>
+          거절
+        </Btn>
+        <Btn backgroundColor="#006FFD" onClick={postApproveWorkerStatus}>
+          수락
+        </Btn>
       </BtnWrapper>
     </Container>
   );
@@ -199,12 +248,14 @@ const Skill = styled.button`
 
 const ExperienceBox = styled.div`
   width: 346px;
-  height: 177px;
   flex-shrink: 0;
   border: 1px solid #000;
   background: #fffcfc;
   align-self: center;
   margin: 17px 0px 0px 0px;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 10px 20px 10px;
 `;
 
 const RightArrowImg = styled.img`

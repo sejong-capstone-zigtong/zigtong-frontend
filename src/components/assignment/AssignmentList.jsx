@@ -1,67 +1,54 @@
+/* eslint-disable no-undef */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import React from "react";
 import styled from "styled-components";
 import testImg from "assets/test/TestCompany.png";
 import testImgAssignment from "assets/test/TestAssignment.png";
 import distancePin from "assets/assignment/DistancePin.svg";
-
+import { useNavigate } from "react-router-dom";
 // 배정된 일자리 리스트
-const AssignmentList = () => {
+const AssignmentList = ({ assignments, status }) => {
+  const navigate = useNavigate();
   return (
     <TotalAssignmentWorks>
-      <EachAssignment>
-        <EachAssignmentLeft>
-          <AssignmentType>배정완료</AssignmentType>
-          <OtherAssignmentText fontWeight="700" margin="6px 0px 0px 0px">
-            4월 27일
-          </OtherAssignmentText>
-          <OtherAssignmentText fontWeight="700" margin="3px 0px 0px 0px">
-            10:00 ~ 20:00
-          </OtherAssignmentText>
-          <OtherAssignmentText margin="5px 0px 0px 0px">
-            캐리비안베이 하수도설비 공사
-          </OtherAssignmentText>
-          <OtherAssignmentText fontSize="12px" margin="3px 0px 0px 0px">
-            경기도 용인시 모현읍
-          </OtherAssignmentText>
-          <OtherAssignmentText fontSize="12px" margin="8px 0px 0px 0px">
-            <img className="company" src={testImg} alt="test" /> 삼성건설
-          </OtherAssignmentText>
-        </EachAssignmentLeft>
-        <EachAssignmentRight>
-          <AssignmentImg src={testImgAssignment} alt="test" />
-          <AssignmentDistance>
-            <img className="pin" src={distancePin} alt="pin" />
-            65km
-          </AssignmentDistance>
-        </EachAssignmentRight>
-      </EachAssignment>
-      <EachAssignment>
-        <EachAssignmentLeft>
-          <AssignmentType>배정완료</AssignmentType>
-          <OtherAssignmentText fontWeight="700" margin="6px 0px 0px 0px">
-            4월 27일
-          </OtherAssignmentText>
-          <OtherAssignmentText fontWeight="700" margin="3px 0px 0px 0px">
-            10:00 ~ 20:00
-          </OtherAssignmentText>
-          <OtherAssignmentText margin="5px 0px 0px 0px">
-            캐리비안베이 하수도설비 공사
-          </OtherAssignmentText>
-          <OtherAssignmentText fontSize="12px" margin="3px 0px 0px 0px">
-            경기도 용인시 모현읍
-          </OtherAssignmentText>
-          <OtherAssignmentText fontSize="12px" margin="8px 0px 0px 0px">
-            <img className="company" src={testImg} alt="test" /> 삼성건설
-          </OtherAssignmentText>
-        </EachAssignmentLeft>
-        <EachAssignmentRight>
-          <AssignmentImg src={testImgAssignment} alt="test" />
-          <AssignmentDistance>
-            <img className="pin" src={distancePin} alt="pin" />
-            65km
-          </AssignmentDistance>
-        </EachAssignmentRight>
-      </EachAssignment>
+      {assignments.length > 0 &&
+        assignments.map((item) => {
+          return (
+            <EachAssignment key={item.postId} onClick={() => navigate(`/works/${item.postId}`)}>
+              <EachAssignmentLeft>
+                <AssignmentType>
+                  {status === "PENDING"
+                    ? "출근신청"
+                    : status === "ACCEPTED"
+                    ? "배정완료"
+                    : "미배정"}
+                </AssignmentType>
+                <OtherAssignmentText fontWeight="700" margin="6px 0px 0px 0px">
+                  {item.startTime.substring(0, 4)}년 {item.startTime.substring(5, 7)}월{" "}
+                  {item.startTime.substring(8, 10)}일
+                </OtherAssignmentText>
+                <OtherAssignmentText fontWeight="700" margin="3px 0px 0px 0px">
+                  {item.startTime.substring(11, 16)} ~ {item.endTime.substring(11, 16)}
+                </OtherAssignmentText>
+                <OtherAssignmentText margin="5px 0px 0px 0px">{item.title}</OtherAssignmentText>
+                <OtherAssignmentText fontSize="12px" margin="3px 0px 0px 0px">
+                  {item.address}
+                </OtherAssignmentText>
+                <OtherAssignmentText fontSize="12px" margin="8px 0px 0px 0px">
+                  <img className="company" src={testImg} alt="test" /> 삼성건설
+                </OtherAssignmentText>
+              </EachAssignmentLeft>
+              <EachAssignmentRight>
+                <AssignmentImg src={testImgAssignment} alt="test" />
+                <AssignmentDistance>
+                  <img className="pin" src={distancePin} alt="pin" />
+                  65km
+                </AssignmentDistance>
+              </EachAssignmentRight>
+            </EachAssignment>
+          );
+        })}
     </TotalAssignmentWorks>
   );
 };

@@ -89,7 +89,7 @@ const ApplicantInquiry = () => {
         applicants.map((user) => {
           return (
             <EachApplicantWrapper key={user.id}>
-              <EachApplicantImage src={applicantTestImage} />
+              <EachApplicantImage src={user.workerDto.uploadUrl} />
               <EachApplicantInfoWrapper>
                 <EachApplicantInfoText>{user.workerDto.nickname}</EachApplicantInfoText>
                 <EachApplicantInfoSecondLine>
@@ -110,7 +110,8 @@ const ApplicantInquiry = () => {
                 onClick={() => {
                   navigate(`/admin/works/${id}/profile`, {
                     state: {
-                      workerId: user.id,
+                      workerId: user.workerDto.id,
+                      workerApplicationId: user.id,
                     },
                   });
                 }}

@@ -63,7 +63,7 @@ const AdminLogin = () => {
     try {
       await LoginAdminApi(userInfo).then((res) => {
         if (res.status === 200) {
-          console.log(res);
+          console.log(res.data.accessToken);
           setAdminInfo({
             accessToken: res.data.accessToken,
             adminId: res.data.id,

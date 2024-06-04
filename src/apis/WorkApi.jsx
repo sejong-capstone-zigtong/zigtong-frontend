@@ -36,3 +36,11 @@ export const applyWorkApi = (accessToken, postId) => {
     },
   );
 };
+
+export const getWorkStatusApi = (accessToken, status) => {
+  return axios.get(`${url}/api/client/v1/worker/application/status?statuses=${status}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};

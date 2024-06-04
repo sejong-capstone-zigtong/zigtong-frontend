@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import leftArrow from "assets/workDetail/ArrowLeft.svg";
 import heart from "assets/workDetail/Heart.svg";
@@ -24,12 +24,19 @@ import { useRecoilValue } from "recoil";
 import { userAccessTokenState } from "recoil/atoms";
 import { useEffect } from "react";
 import mapImg from "assets/adminWork/AddressDetail.png";
+import { getUserInfoApi } from "apis/ProfileApis";
 
 // 일자리 상세페이지
 const WorkDetail = () => {
   const navigate = useNavigate();
 
   const postId = useParams().postId;
+
+  // 4단계 충족 여부 확인
+  const [isIdVerification, setIsIdVerification] = useState(true);
+  const [isProfileImg, setIsProfileImg] = useState(false);
+  const [isSelfIntroduce, setIsSelfIntroduce] = useState(false);
+  const [isHasSkill, setIsHasSkill] = useState(false);
 
   const accessToken = useRecoilValue(userAccessTokenState);
 
@@ -70,17 +77,39 @@ const WorkDetail = () => {
 
   const applyWork = async () => {
     try {
-      await applyWorkApi(accessToken, postId).then((res) => {
-        console.log(res);
-        if (res.data.status === 200) {
-          alert("지원 완료");
-        }
-      });
+      if (isIdVerification && isProfileImg && isSelfIntroduce && isHasSkill) {
+        await applyWorkApi(accessToken, postId).then((res) => {
+          console.log(res);
+          if (res.data.status === 200) {
+            alert("지원 완료");
+          }
+        });
+      } else {
+        alert("프로필 4단계를 채운 후 지원이 가능합니다");
+        navigate("/profile");
+      }
     } catch (err) {
       if (err.response.data.data.errorClassName === "ALREADY_APPLIED")
         alert("이미 지원한 공고입니다.");
     }
   };
+
+  // 유저 이력서 정보 받기
+  const getUserInfo = useCallback(async () => {
+    try {
+      getUserInfoApi(accessToken).then((res) => {
+        if (res.data.data.profileImageUrl != "") setIsProfileImg(true);
+        if (res.data.data.content !== "") setIsSelfIntroduce(true);
+        if (res.data.data.skills.length !== 0) setIsHasSkill(true);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    getUserInfo();
+  }, [getUserInfo]);
 
   return (
     <WorkTotalComponent>
