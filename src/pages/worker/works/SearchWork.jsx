@@ -160,7 +160,7 @@ const SearchWork = () => {
     } catch (err) {
       console.log(err);
     }
-  }, [category]);
+  }, [category, accessToken, page]);
 
   useEffect(() => {
     getWorkList();

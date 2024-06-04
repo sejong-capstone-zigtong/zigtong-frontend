@@ -58,7 +58,7 @@ const ApplicantProfile = () => {
 
   const postApproveWorkerStatus = async () => {
     try {
-      await postWorkerStatusApi(adminInfo.accessToken, id, workerApplicationId, "ACCEPT").then(
+      await postWorkerStatusApi(adminInfo.accessToken, id, workerApplicationId, "ACCEPTED").then(
         (res) => {
           console.log(res);
           alert("수락 완료");
@@ -70,7 +70,7 @@ const ApplicantProfile = () => {
   };
   const postDenyWorkerStatus = async () => {
     try {
-      await postWorkerStatusApi(adminInfo.accessToken, id, workerApplicationId, "REFUSE").then(
+      await postWorkerStatusApi(adminInfo.accessToken, id, workerApplicationId, "REJECTED").then(
         (res) => {
           console.log(res);
           alert("거절 완료");
