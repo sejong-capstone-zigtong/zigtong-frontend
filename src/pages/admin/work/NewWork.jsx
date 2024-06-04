@@ -6,7 +6,7 @@ import picture from "assets/adminWork/picture.svg";
 import bottomArrow from "assets/adminWork/bottomArrow.svg";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { MakePostApi, getCategoryApi } from "apis/AdminApis";
+import { MakePostApi, getAdminSkillCategoryApi, getCategoryApi } from "apis/AdminApis";
 import { adminInfoState } from "recoil/atoms";
 import { useRecoilValue } from "recoil";
 
@@ -16,7 +16,7 @@ const NewWork = () => {
   const [workInfo, setWorkInfo] = useState({
     title: "",
     content: "",
-    category: "건설업",
+    category: "",
     numberOfRecruits: 0,
     startTime: "",
     endTime: "",
@@ -240,33 +240,11 @@ const NewWork = () => {
   };
 
   const [categoryList, setCategoryList] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredCategories, setFilteredCategories] = useState([]);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
-
-  useEffect(() => {
-    try {
-      if (searchTerm === "") {
-        setOpenCategoryModal(false);
-        setFilteredCategories([]);
-      } else {
-        setOpenCategoryModal(true);
-        setFilteredCategories(
-          categoryList.filter((category) => category.industryName.startsWith(searchTerm)),
-        );
-        console.log(
-          categoryList.filter((category) => category.industryName.startsWith(searchTerm)),
-        );
-      }
-    } catch (error) {
-      console.error("Error filtering categories:", error);
-      setFilteredCategories([]);
-    }
-  }, [searchTerm]);
 
   const getCategory = async () => {
     try {
-      await getCategoryApi().then((res) => {
+      await getAdminSkillCategoryApi(adminInfo.accessToken).then((res) => {
         console.log(res);
         setCategoryList(res.data);
       });
@@ -289,25 +267,24 @@ const NewWork = () => {
       <SeekContent onChange={onChange} name="title" value={title} placeholder="구인 제목 입력" />
       <Label margin="24px 0px 0px 24px">하는일</Label>
       <SeekContent
-        value={searchTerm}
-        placeholder="업종 검색을 해주세요"
-        onChange={(e) => setSearchTerm(e.target.value)}
+        value={category}
+        placeholder="하는 일을 선택을 해주세요"
+        onClick={() => setOpenCategoryModal(!openCategoryModal)}
       />
-      {openCategoryModal && filteredCategories.length > 0 && (
+      {openCategoryModal && (
         <FilteredCategoriesWrapper>
-          {filteredCategories.map((category, index) => (
+          {categoryList.map((category, index) => (
             <EachFilter
               key={index}
               onClick={() => {
                 setWorkInfo({
                   ...workInfo,
-                  category: category.industryName,
+                  category: category.category,
                 });
-                setSearchTerm(category.industryName);
                 setOpenCategoryModal(false);
               }}
             >
-              {category.industryName} ({category.industryCode})
+              {category.category}
             </EachFilter>
           ))}
         </FilteredCategoriesWrapper>

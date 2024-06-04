@@ -7,11 +7,7 @@ const TotalWorkListComponent = () => {
   return (
     <WorkListComponent>
       <EachWork />
-      <EachWork />
-      <EachWork />
-      <EachWork />
-      <EachWork />
-      <EachWork />
+      {/* <EachWork /> */}
     </WorkListComponent>
   );
 };

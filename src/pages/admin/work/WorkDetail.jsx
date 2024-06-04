@@ -135,12 +135,11 @@ const HeaderContentWrapper = styled.div`
 
 const HeaderContentTopText = styled.div`
   color: #000;
-  text-align: center;
   font-family: "Pretendard Variable";
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
-  line-height: 12px;
+  line-height: 18px;
   margin: 10px 0px 0px 9px;
 `;
 
