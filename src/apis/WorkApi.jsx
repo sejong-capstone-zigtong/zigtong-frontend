@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 import axios from "axios";
 
-const url = `http://${process.env.REACT_APP_WORKER_SERVER_URL}`;
+const url = `https://${process.env.REACT_APP_WORKER_SERVER_URL}`;
 
 export const getWorkListApi = (accessToken, page, size, category) => {
   let baseUrl = `${url}/api/client/v1/post?page=${page}&size=${size}`;

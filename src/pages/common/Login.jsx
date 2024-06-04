@@ -68,9 +68,10 @@ const Login = () => {
         navigate("/works");
       });
     } catch (err) {
-      if (err.response.data.data.message === "존재하지 않는 회원입니다.") {
-        alert("존재하지 않는 회원입니다.");
-      }
+      console.log(err);
+      // if (err.response.data.data.message === "존재하지 않는 회원입니다.") {
+      // alert("존재하지 않는 회원입니다.");
+      // }
     }
   };
 

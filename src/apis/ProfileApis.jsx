@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import axios from "axios";
 
-const url = `http://${process.env.REACT_APP_WORKER_SERVER_URL}`;
+const url = `https://${process.env.REACT_APP_WORKER_SERVER_URL}`;
 
 // 유저 이력서 받기
 export const getUserInfoApi = (accessToken) => {
