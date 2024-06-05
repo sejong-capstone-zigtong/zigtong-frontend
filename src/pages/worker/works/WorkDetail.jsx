@@ -98,8 +98,10 @@ const WorkDetail = () => {
   const getUserInfo = useCallback(async () => {
     try {
       getUserInfoApi(accessToken).then((res) => {
-        if (res.data.data.profileImageUrl != "") setIsProfileImg(true);
-        if (res.data.data.content !== "") setIsSelfIntroduce(true);
+        if (res.data.data.profileImageUrl != "" && res.data.data.profileImageUrl != null)
+          setIsProfileImg(true);
+        if (res.data.data.content !== null && res.data.data.content !== "")
+          setIsSelfIntroduce(true);
         if (res.data.data.skills.length !== 0) setIsHasSkill(true);
       });
     } catch (err) {

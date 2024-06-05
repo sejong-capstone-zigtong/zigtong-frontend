@@ -229,6 +229,9 @@ const SkillWrapper = styled.div`
   align-items: center;
   margin: 12px 0px 0px 35px;
   gap: 10px;
+  overflow-x: auto;
+  width: 330px;
+  padding: 5px 0px;
 `;
 
 const Skill = styled.button`
