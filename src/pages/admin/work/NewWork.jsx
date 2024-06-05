@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/react-in-jsx-scope */
 import styled from "styled-components";
@@ -227,7 +228,7 @@ const NewWork = () => {
       else if (address === "") alert("주소를 입력해주세요");
       else if (phoneNumber === "") alert("연락처를 입력해주세요");
       else {
-        await MakePostApi(adminInfo.accessToken, workInfo).then((res) => {
+        await MakePostApi(adminInfo.accessToken, imageFiles, workInfo).then((res) => {
           console.log(res);
           if (res.status === 200) {
             navigate("/admin");
@@ -257,12 +258,40 @@ const NewWork = () => {
     getCategory();
   }, []);
 
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
+
+  const handleImageChange = (e) => {
+    let files = Array.from(e.target.files);
+
+    let newImageUrls = files.map((file) => URL.createObjectURL(file));
+    setImageUrls((prevImageUrls) => [...prevImageUrls, ...newImageUrls]);
+    setImageFiles((prevImageFiles) => [...prevImageFiles, ...files]);
+  };
+
   return (
     <Container>
       <XIcon src={xIcon} onClick={() => navigate("/admin")} />
       <Label margin="26px 0px 0px 24px">사진 (선택)</Label>
       <LabelDescription>일하는 공간이나 일과 관련된 사진을 올려보세요.</LabelDescription>
-      <CaptureIcon src={picture} />
+      <FlexRow>
+        <label htmlFor="file">
+          <CaptureIcon src={picture} />
+        </label>
+        <input
+          type="file"
+          name="file"
+          id="file"
+          style={{ display: "none" }}
+          onChange={handleImageChange}
+          multiple
+        />
+        {imageUrls.length > 0 &&
+          imageUrls.map((image, index) => {
+            return <CaptureIcon key={index} src={image} />;
+          })}
+      </FlexRow>
+
       <Label margin="18px 0px 0px 24px">제목</Label>
       <SeekContent onChange={onChange} name="title" value={title} placeholder="구인 제목 입력" />
       <Label margin="24px 0px 0px 24px">하는일</Label>
@@ -444,6 +473,12 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #fff;
+`;
+
+const FlexRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;
 
 const XIcon = styled.img`

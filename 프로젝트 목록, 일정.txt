@@ -1,0 +1,40 @@
+팀프로젝트 일정
+
+
+프론트 -  
+1. 	홀로서기 (멋쟁이사자처럼 중앙해커톤) , 2023/07/28 ~ 2023/08/18 , 프론트엔드 참여 , 적응형, reactJs, Redux, module.css 
+	보호종료아동 및 자립청소년을 위한 자립지원 서비스(커뮤니티, 지원프로그램 정보지원, 멘토멘티 연결)
+	https://github.com/Teamo-project/holoseogi-frontend.git
+
+2. 	분리할래? (멋쟁이사자처럼 미르톤), 2023/11/1 ~ 2023/11/11 , 프론트엔드 참여, 반응형, reactJs, Redux, scss
+	분리수거 방법을 고민하는 사람들을 위하여 게임을 통해 더 재밌게 분리수거 방법을 제공 및 받은 마일리지를 통한 지역경제활성화
+	https://github.com/2023-Ganzithon/Team19.git
+
+3. 	Fellow (코테이토 동아리 팀프로젝트), 2023/11/10 ~ 2024  , 프론트엔드 참여, 반응형, reactJs, Recoil, styled components
+	학생의 ai와의 대화를 통하여 학생들의 정신건강 상태 확인 및 교사의 학생관리, 대화를 통한 학생의 기분을 달력에 표시하여 학생들 상태 확인 가능,
+	https://github.com/FellowCotato/Feelow_FrontEnd
+
+
+4. 	라이프매니저 (팀프로젝트), 2023/11/13 ~ 2024 , 프론트엔드 참여, 반응형, reactJs
+	어린 젋은 층들을 위한 소개팅 플랫폼은 많지만, 외로운 노인분들을 위한 만남 방법은 없기 때문에 제작한 노인분들을 위한 소개팅 플랫폼
+	https://github.com/SJU-LifeManager/58CheongChun_FrontEnd
+	   
+5.	코바코 기업과 협업하여 홈페이지 문제점 개선 프로젝트, 2024/02/16 ~ 2024/03/10, 프론트엔드 참여, 웹, typeScript
+	메인 홈페이지 ui 개선안과 내부 메뉴 페이지 구체화 방안 마련
+	https://github.com/Kusitms-29th-Kobaco-A/Frontend
+	https://www.figma.com/proto/FUaG23oI5qneAvaZWxKSiC/%EC%BD%94%EB%B0%94%EC%BD%94A%EC%A1%B0?	page-id=989%3A8633&type=design&node-id=989-9870&viewport=4015%2C1623%2C0.22&t=wQUvYtIWAedDhAtI-1&scaling=contain
+
+
+
+
+
+수상
+
+2023/11/23 세종대학교 창업지원단 X 멋쟁이사자처럼 IT 창업 기획 컨퍼런스 우수상 - 직통
+
+
+
+https://ultra-wallet-036.notion.site/92fbcb141a80427cb995cdd368932f55
+
+https://github.com/tlarbals824/MakeMyImage
+

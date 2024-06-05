@@ -29,7 +29,11 @@ const EachWork = (props) => {
       </EachWorkHeader>
       <EachWorkTotalContent>
         <EachWorkContentLeft>
-          <EachWorkContentLeftImg src={testImg} alt="test" />
+          {work.work.workspacePostDtoList && work.work.workspacePostDtoList.length > 0 ? (
+            <EachWorkContentLeftImg src={work.work.workspacePostDtoList[0].url} alt="test" />
+          ) : (
+            <EachWorkContentLeftImg src={testImg} alt="test" />
+          )}
           <EachWorkContentLeftPay>
             {work.work.wageType === "MONTH"
               ? "월급"
