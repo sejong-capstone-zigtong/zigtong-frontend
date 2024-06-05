@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 import axios from "axios";
 
-const url = `http://${process.env.REACT_APP_ADMIN_SERVER_URL}`;
+const url = `https://${process.env.REACT_APP_ADMIN_SERVER_URL}`;
 
 export const getCategoryApi = () => {
   return axios.get(`${url}/api/v1/admins/business-type`);
