@@ -32,46 +32,8 @@ const SettlementStatus = () => {
   const getWorkers = async () => {
     try {
       await GetWorkersApi(adminInfo.accessToken, id).then((res) => {
-        // setApplicants(res.data);
+        setApplicants(res.data);
         console.log(res.data);
-        setApplicants([
-          {
-            id: 0,
-            applicationStatus: "DEFAULT",
-            workerDto: {
-              id: "id1",
-              name: "name1",
-              birthdate: "1998-05-21",
-              nickname: "nickname1",
-              gender: "MALE",
-              uploadRul: "string1",
-            },
-          },
-          {
-            id: 1,
-            applicationStatus: "DEFAULT",
-            workerDto: {
-              id: "id2",
-              name: "name2",
-              birthdate: "1997-05-22",
-              nickname: "nickname2",
-              gender: "FEMALE",
-              uploadRul: "string2",
-            },
-          },
-          {
-            id: 2,
-            applicationStatus: "DEFAULT",
-            workerDto: {
-              id: "id3",
-              name: "name3",
-              birthdate: "1977-05-23",
-              nickname: "nickname3",
-              gender: "MALE",
-              uploadRul: "string3",
-            },
-          },
-        ]);
       });
     } catch (err) {
       console.log(err);
@@ -89,7 +51,7 @@ const SettlementStatus = () => {
         applicants.map((user) => {
           return (
             <EachApplicantWrapper key={user.id}>
-              <EachApplicantImage src={applicantTestImage} />
+              <EachApplicantImage src={user.workerDto.uploadUrl} />
               <EachApplicantInfoWrapper>
                 <EachApplicantInfoText>{user.workerDto.nickname}</EachApplicantInfoText>
                 <EachApplicantInfoSecondLine>
@@ -106,7 +68,7 @@ const SettlementStatus = () => {
                   </EachApplicantInfoText>
                 </EachApplicantInfoSecondLine>
               </EachApplicantInfoWrapper>
-              <EachApplicantInfoBtn>정산 완료</EachApplicantInfoBtn>
+              <EachApplicantInfoBtn>정산 중</EachApplicantInfoBtn>
             </EachApplicantWrapper>
           );
         })}
