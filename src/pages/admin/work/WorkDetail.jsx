@@ -14,14 +14,19 @@ import { GetPostInfoApi } from "apis/AdminApis";
 import { useRecoilState } from "recoil";
 import { adminInfoState } from "recoil/atoms";
 import { useEffect, useState } from "react";
-
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper-bundle.css";
+import "swiper/css";
+import SwiperCore from "swiper";
+import { Navigation } from "swiper/modules";
 const WorkDetail = () => {
   const navigate = useNavigate();
   const id = useParams().postId;
   console.log(id);
-
+  SwiperCore.use([Navigation]);
   const [adminInfo, setAdminInfo] = useRecoilState(adminInfoState);
-
+  const nextButtonClass = `swiper-button-next`;
+  const prevButtonClass = `swiper-button-prev`;
   const [postInfo, setPostInfo] = useState({});
 
   const getPostInfo = async () => {
@@ -41,7 +46,34 @@ const WorkDetail = () => {
 
   return (
     <Container>
-      <Background src={Back} />
+      <Outer>
+        <Swiper
+          navigation={{
+            // Navigation options
+            nextEl: `.${nextButtonClass}`,
+            prevEl: `.${prevButtonClass}`,
+          }}
+          style={{ width: "100%", margin: "33px 0px 0px" }}
+          spaceBetween={16}
+          slidesPerView={1}
+          onSwiper={(swiper) => console.log(swiper)}
+          onSlideChange={() => console.log("slide change")}
+        >
+          {postInfo.workspacePostDtoList &&
+            postInfo.workspacePostDtoList.length > 0 &&
+            postInfo.workspacePostDtoList.map((post, index) => {
+              return (
+                <SwiperSlide key={index}>
+                  <Background src={post.url} />
+                </SwiperSlide>
+              );
+            })}
+        </Swiper>
+        {/* 화살표 부분 */}
+        <PrevSlide className={`swiper-button-prev`} /> {/* Next button */}
+        <NextSlide className={`swiper-button-next`} /> {/* Next button */}
+      </Outer>
+
       <HeaderWork>
         <HeaderProfile src={profile} />
         <HeaderContentWrapper>
@@ -107,16 +139,23 @@ const Container = styled.div`
   background-color: #fff;
 `;
 
-const Background = styled.img`
+const Outer = styled.div`
   width: 390px;
   height: 399px;
+  flex-shrink: 0;
+  position: relative;
+`;
+
+const Background = styled.img`
+  width: 390px;
+  height: 390px;
   flex-shrink: 0;
 `;
 
 const HeaderWork = styled.div`
   display: flex;
   align-items: center;
-  margin: 17px 0px 0px 0px;
+  margin: 40px 0px 0px 0px;
 `;
 
 const HeaderProfile = styled.img`
@@ -319,4 +358,46 @@ const Btn = styled.div`
   margin: 0px 15px;
   background-color: ${(props) => props.backgroundColor};
   cursor: pointer;
+`;
+
+const PrevSlide = styled.div`
+  z-index: 1;
+
+  &::after {
+    z-index: 10;
+    position: absolute;
+    top: 40%;
+    left: 10px; // 오른쪽 여백 조정
+    color: #fff;
+    background-color: #d33b4d;
+    width: 30px; // 화살표 크기 조정
+    height: 30px; // 화살표 크기 조정
+    font-size: 14px; // 화살표 표시에 사용되는 텍스트나 아이콘의 크기 조정
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; // 화살표 버튼을 원형으로 디자인
+  }
+`;
+
+const NextSlide = styled.div`
+  z-index: 1;
+
+  &::after {
+    z-index: 10;
+    position: absolute;
+    top: 40%;
+    right: 10px; // 오른쪽 여백 조정
+    color: #fff;
+    background-color: #d33b4d;
+    width: 30px; // 화살표 크기 조정
+    height: 30px; // 화살표 크기 조정
+    font-size: 14px; // 화살표 표시에 사용되는 텍스트나 아이콘의 크기 조정
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; // 화살표 버튼을 원형으로 디자인
+  }
 `;

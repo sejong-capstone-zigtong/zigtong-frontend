@@ -32,10 +32,22 @@ export const GetPostInfoApi = (accessToken, postId) => {
   });
 };
 
-export const MakePostApi = (accessToken, workInfo) => {
-  return axios.post(`${url}/api/v1/admins/posts`, workInfo, {
+export const MakePostApi = (accessToken, imageFiles, workInfo) => {
+  const formData = new FormData();
+
+  // imageFiles 배열의 각 파일을 FormData에 추가
+  imageFiles.forEach((file, index) => {
+    formData.append(`images`, file);
+  });
+  console.log(imageFiles);
+  // workInfo를 문자열로 변환하여 FormData에 추가
+  formData.append("post", JSON.stringify(workInfo));
+
+  console.log(formData);
+  return axios.post(`${url}/api/v1/admins/posts`, formData, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "multipart/form-data",
     },
   });
 };
