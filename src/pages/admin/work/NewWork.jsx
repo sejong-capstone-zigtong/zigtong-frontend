@@ -199,7 +199,8 @@ const NewWork = () => {
 
   const submitWork = async () => {
     try {
-      if (title === "") {
+      if (imageFiles.length === 0) alert("사진을 첨부해주세요");
+      else if (title === "") {
         alert("제목을 입력해주세요");
       } else if (content === "") {
         alert("구인 내용 요약을 적어주세요");
@@ -272,7 +273,7 @@ const NewWork = () => {
   return (
     <Container>
       <XIcon src={xIcon} onClick={() => navigate("/admin")} />
-      <Label margin="26px 0px 0px 24px">사진 (선택)</Label>
+      <Label margin="26px 0px 0px 24px">사진 (필수)</Label>
       <LabelDescription>일하는 공간이나 일과 관련된 사진을 올려보세요.</LabelDescription>
       <FlexRow>
         <label htmlFor="file">
