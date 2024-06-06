@@ -108,7 +108,7 @@ const FooterTotalComponent = styled.div`
   height: 83px;
   border: 1px solid rgba(0, 0, 0, 0.4);
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-
+  z-index: 100;
   background-color: #fff;
 `;
 
