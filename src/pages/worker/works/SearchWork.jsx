@@ -257,7 +257,9 @@ const SearchWorkTotalComponent = styled.div`
 `;
 
 const HeaderComponent = styled.div`
+  position: relative;
   display: flex;
+  width: 100%;
   align-self: flex-start;
   align-items: center;
   margin: 27px 0px 0px 0px;
